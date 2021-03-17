@@ -42,23 +42,21 @@ def plot_european_countries(countries, path):
     plt.savefig(path)
 
 
-specification = (
-    (
-        BLD / "figures" / f"plot_{countries}_mobility.png"
-    ) 
-    for countries in ["small_countries", "large_countries"]
-)
 
-@pytask.mark.depends_on(BLD/"data"/"eu_complete_data.csv")
-@pytask.mark.parametrize("produces", specification)
+products = {
+    "small": BLD / "figures" / "European_Mobility" / "plot_small_eu_countries_mobility.png",
+    "large": BLD / "figures" / "European_Mobility" / "plot_large_eu_countries_mobility.png"
+    }
+@pytask.mark.depends_on(BLD/"data"/"eu_composed_data_country_level.csv")
+@pytask.mark.produces(products)
 def task_plot_european_countries(depends_on, produces):
     #Load in data
     eu_complete_data = pd.read_csv(depends_on)
     eu_complete_data = eu_complete_data.set_index(["country", "date"])
 
-    small_countries = eu_complete_data.loc[["Germany","Netherlands","Austria","Sweden","Denmark"]]
-    large_countries = eu_complete_data.loc[["Germany","France","United Kingdom","Italy","Spain"]]
+    small = ["Germany","Netherlands","Austria","Sweden","Denmark"]
+    large = ["Germany","France","United Kingdom","Italy","Spain"]
     
-    for countries in [small_countries, large_countries]:
-        countries = countries.reset_index(0)
-        plot_european_countries(countries, produces)
+    plot_european_countries(countries=eu_complete_data.loc[small].reset_index(0), path=produces["small"])
+    plot_european_countries(countries=eu_complete_data.loc[large].reset_index(0), path=produces["large"])
+
