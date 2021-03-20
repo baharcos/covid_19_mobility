@@ -1,3 +1,7 @@
+'''
+This task cleans and prepares all datasets for the following analysis.
+'''
+
 import numpy as np
 import pandas as pd
 import pytask

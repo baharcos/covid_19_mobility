@@ -1,3 +1,8 @@
+'''
+This task produces two different kinds of plots:\n
+1. Overall German mobility with respect to categories "Retail and Recreation", "Grocery and Pharmacy", "Workplaces", "Parks", "Transit Stations" and "Residential"\n
+2. Mobility in different forms of division of Germany: "City States", "Non-City States", "City vs Territorial", "Former BRD vs DDR states" and "North-East-South-West comparison"\n
+'''
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -23,7 +28,22 @@ varlist_moving_avg = ['retail_and_recreation',
 
 
 
-def mobility_plot(path, data_set, var_list_moving_avg, fig_width = 20, fig_height = 40,group_var="state"):
+def mobility_plot(data_set, var_list_moving_avg, path, fig_width = 20, fig_height = 40,group_var="state"):
+    '''
+    Produces figure for mobility based on variables provided to the function
+
+    Input:
+        data_set (df): dataset containing 
+        var_list_moving_avg (list): list containing categories to observe
+        fig_width (int): Width of figure (default is 20)
+        fig_height (int): Height of figure (default is 40)
+        group_var (string): Variable to be grouped on
+        path (path-like): path where to save the produces figure
+    
+    Output:
+        figure (matplotlib object): produced figure 
+    '''
+
     num_plots = len(var_list_moving_avg)
     fig, ax = plt.subplots(num_plots, 1, figsize=(fig_width,fig_height))
 
@@ -79,17 +99,17 @@ def task_plot_german_states_mobility(depends_on, produces):
     germany_state_level = germany_state_level.set_index("date")
 
     # City states comparison (unaggregated)
-    mobility_plot(path = produces["city_state"], data_set = germany_state_level.loc[germany_state_level["city_noncity"] == "city state"], var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40)
+    mobility_plot(data_set = germany_state_level.loc[germany_state_level["city_noncity"] == "city state"], var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40, path = produces["city_state"])
 
     # Non city_state comparison (unaggregated)
-    mobility_plot(path = produces["non_city_state"], data_set = germany_state_level.loc[germany_state_level["city_noncity"] == "territorial state"], var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40)
+    mobility_plot(data_set = germany_state_level.loc[germany_state_level["city_noncity"] == "territorial state"], var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40, path = produces["non_city_state"])
 
     # City versus territorial state comparison (aggegregated)
-    mobility_plot(path = produces["city_vs_territorial_state"], data_set = germany_state_level.groupby(["date","city_noncity"]).mean().reset_index(1), var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40,group_var="city_noncity")
+    mobility_plot(data_set = germany_state_level.groupby(["date","city_noncity"]).mean().reset_index(1), var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40,group_var="city_noncity", path = produces["city_vs_territorial_state"])
 
     # Former BRD and DDR comparison (aggegregated)
-    mobility_plot(path = produces["former_brd_vs_ddr"], data_set = germany_state_level.groupby(["date","brd_ddr"]).mean().reset_index(1), var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40,group_var="brd_ddr")
+    mobility_plot(data_set = germany_state_level.groupby(["date","brd_ddr"]).mean().reset_index(1), var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40,group_var="brd_ddr", path = produces["former_brd_vs_ddr"])
 
     # Four regions of Germany
-    mobility_plot(path = produces["four_regions"], data_set = germany_state_level.groupby(["date","four_regions"]).mean().reset_index(1), var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40,group_var="four_regions")
+    mobility_plot(data_set = germany_state_level.groupby(["date","four_regions"]).mean().reset_index(1), var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40,group_var="four_regions", path = produces["four_regions"])
 

@@ -1,4 +1,8 @@
-'''Downloads the mobility data from both Apple and Google.
+'''This task downloads all the data needed for further analysis:\n
+1. Apple Mobility data\n
+2. Google Mobility data\n
+3. Our World in Data (OWID) infection numbers\n
+4. Our World in Data (OWID) stringency index
 '''
 import pandas as pd
 import pytask

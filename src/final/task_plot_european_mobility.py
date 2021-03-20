@@ -1,3 +1,7 @@
+'''
+This task compares overall German mobility with mobility from larger european countries 
+(France, United Kingdom, Italy, Spain) and smaller european countries (Netherlands, Austria, Sweden, Denmark)
+'''
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -10,6 +14,16 @@ from src.config import SRC
 
 
 def plot_european_countries(countries, path):
+    '''
+    Plots mobility on country level for different countries
+
+    Input: 
+        countries (list): list containing countries whose mobility should be comared
+        path (path-like): path where to save the produced figure
+    
+    Output:
+        figure (matplotlib object): figure showing mobility in different countries
+    '''
 
     # # Plotting infection numbers in small countries
     # fig, ax = plt.subplots(figsize=(15,8))
@@ -39,7 +53,7 @@ def plot_european_countries(countries, path):
     ax[2].set_title("Workplaces (7d-average)")
     ax[2].set_ylim(-80,10)
 
-    plt.savefig(path)
+    return plt.savefig(path)
 
 
 
