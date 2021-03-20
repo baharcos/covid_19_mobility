@@ -1,14 +1,21 @@
 .. _final:
 
 ************************************
-Visualisation and results formatting
+Visualization and results formatting
 ************************************
 
 Documentation of the code in *src.final*.
 
 
-Schelling example
-=================
+European countries mobility
+===========================
 
-.. automodule:: src.final.task_plot_locations
+.. automodule:: src.final.task_plot_european_mobility
+    :members:
+
+
+German mobility
+===============
+
+.. automodule:: src.final.task_plot_german_mobility
     :members:

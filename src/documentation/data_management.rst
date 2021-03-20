@@ -6,5 +6,15 @@ Data management
 
 Documentation of the code in *src/data_management*.
 
-.. automodule:: src.data_management.task_get_simulation_draws
+Download data
+=============
+
+.. automodule:: src.data_management.task_get_data
     :members:
+
+
+Clean and prepare data
+======================
+.. automodule:: src.data_management.task_prepare_data
+    :members:
+
