@@ -195,9 +195,9 @@ def task_prepare_data(depends_on, produces):
     eu_composed_data_country_level.to_csv(produces["eu_country_level"])
 
 
-@pytask.mark.depends_on(SRC / "original_data" / "stringency_index_data.csv")
-@pytask.mark.produces(BLD / "data" / "german_stringency_data.csv")
-def task_prepare_data(depends_on, produces):
+@pytask.mark.depends_on(SRC /"original_data"/"stringency_index_data.csv")
+@pytask.mark.produces(BLD /"data"/"german_stringency_data.csv")
+def task_prepare_stringency_data(depends_on, produces):
     stringency_data = pd.read_csv(depends_on)
     stringency_data = stringency_data.set_index("country")
     german_stringency_data = stringency_data.loc["Germany"].drop("country_code", axis=1)
