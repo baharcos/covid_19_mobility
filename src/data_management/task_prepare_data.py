@@ -81,17 +81,17 @@ def create_mvg_avg(data,varlist,grouping_var,kind="backward",time=7):
     
     if kind == "backward":
     
-        out[varlist_moving_avg] = out[varlist].apply(lambda x: x.groupby(level=grouping_var).rolling(time).mean(),axis=0).reset_index(level=0, drop=True)        
+        out[varlist_moving_avg] = out[varlist].apply(lambda x: x.groupby(level=grouping_var).rolling(time).mean(),axis=0).reset_index(level=0, drop=True).to_numpy()      
     
     if kind == "forward":
     
-        out[varlist_moving_avg] = out[varlist].apply(lambda x: x[::-1].groupby(level=grouping_var).rolling(time).mean()[::-1],axis=0).sort_index(0).reset_index(level=0, drop=True) 
+        out[varlist_moving_avg] = out[varlist].apply(lambda x: x[::-1].groupby(level=grouping_var).rolling(time).mean()[::-1],axis=0).sort_index(0).reset_index(level=0, drop=True).to_numpy()    
     
     return(out)
 
 
 @pytask.mark.depends_on(SRC/"original_data"/"owid_data.csv")
-@pytask.mark.produces(BLD/"data"/"infection_data.csv")
+@pytask.mark.produces(BLD/"data"/"infection_data.pkl")
 def task_prepare_owid_data(depends_on, produces):
     # Load in OWID data
     owid_data = pd.read_csv(depends_on)
@@ -107,7 +107,6 @@ def task_prepare_owid_data(depends_on, produces):
 
     # # Make date a datetime object
     eu_infect_numbers["date"] = list(map(lambda x: datetime.strptime(x,"%Y-%m-%d"),eu_infect_numbers["date"]))
-    eu_infect_numbers["test1"] = 333
 
     # # Use MultiIndex for better overview
     eu_infect_numbers = eu_infect_numbers.set_index(["country", "date"])
@@ -116,12 +115,12 @@ def task_prepare_owid_data(depends_on, produces):
     create_mvg_avg(eu_infect_numbers,["new_cases"],"country",kind="forward",time=7)
 
     # Save dataframe as csv
-    eu_infect_numbers.to_csv(produces)
+    eu_infect_numbers.to_pickle(produces)
 
 
 
-@pytask.mark.depends_on({"google": SRC/"original_data"/"google_data.csv", "infection": BLD/"data"/"infection_data.csv"})
-@pytask.mark.produces({"german_states": BLD/"data"/"german_states_data.csv", "eu_country_level": BLD/"data"/"eu_composed_data_country_level.csv"})
+@pytask.mark.depends_on({"google": SRC/"original_data"/"google_data.csv", "infection": BLD/"data"/"infection_data.pkl"})
+@pytask.mark.produces({"german_states": BLD/"data"/"german_states_data.pkl", "eu_country_level": BLD/"data"/"eu_composed_data_country_level.pkl"})
 def task_prepare_data(depends_on, produces):
     # Load in Google data
     google_data = pd.read_csv(depends_on["google"])
@@ -174,7 +173,7 @@ def task_prepare_data(depends_on, produces):
     germany_state_level = germany_state_level.drop("country")
 
     germany_state_level = create_mvg_avg(germany_state_level,['retail_and_recreation','grocery_and_pharmacy', 'parks', 'transit_stations', 'workplaces','residential'],"state",kind="forward")
-    germany_state_level.to_csv(produces["german_states"])
+    germany_state_level.to_pickle(produces["german_states"])
 
     # Create dataset for comparison between different european countries
     eu_country_level_data = eu_data[eu_data["sub_region_1"] == "country"]
@@ -185,22 +184,23 @@ def task_prepare_data(depends_on, produces):
     eu_country_level_data = create_mvg_avg(eu_country_level_data,['retail_and_recreation','grocery_and_pharmacy', 'parks', 'transit_stations', 'workplaces','residential'],"country",kind="forward")
     
     # Load in infection numbers
-    eu_infect_numbers = pd.read_csv(depends_on["infection"])
-    eu_infect_numbers = eu_infect_numbers.set_index(["country", "date"])
+    eu_infect_numbers = pd.read_pickle(depends_on["infection"])
+    #eu_infect_numbers = eu_infect_numbers.set_index(["country", "date"])
     
     # Join the two datasets
     eu_composed_data_country_level = eu_country_level_data.join(eu_infect_numbers)
     eu_composed_data_country_level = eu_composed_data_country_level.reset_index()
 
-    eu_composed_data_country_level.to_csv(produces["eu_country_level"])
+    eu_composed_data_country_level.to_pickle(produces["eu_country_level"])
 
 
 @pytask.mark.depends_on(SRC /"original_data"/"stringency_index_data.csv")
-@pytask.mark.produces(BLD /"data"/"german_stringency_data.csv")
+@pytask.mark.produces(BLD /"data"/"german_stringency_data.pkl")
 def task_prepare_stringency_data(depends_on, produces):
     stringency_data = pd.read_csv(depends_on)
     stringency_data = stringency_data.set_index("country")
+    stringency_data = create_mvg_avg(stringency_data,["stringency_index"],grouping_var="country",kind="forward",time=7)
     german_stringency_data = stringency_data.loc["Germany"].drop("country_code", axis=1)
-    german_stringency_data.to_csv(produces)
+    german_stringency_data.to_pickle(produces)
 
 
