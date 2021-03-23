@@ -20,7 +20,7 @@ titles = ['Retail and Recreation (7d-average)', 'Grocery and Pharmacy (7d-averag
 varlist_moving_avg = ['retail_and_recreation_avg_7d',
        'grocery_and_pharmacy_avg_7d', 'workplaces_avg_7d',
        'parks_avg_7d' , 'residential_avg_7d','transit_stations_avg_7d']
-       
+
 
 
 def mobility_plot(data_set, var_list_moving_avg, path, fig_width = 20, fig_height = 40,group_var="state"):
@@ -54,7 +54,7 @@ def mobility_plot(data_set, var_list_moving_avg, path, fig_width = 20, fig_heigh
 
 
 @pytask.mark.depends_on(BLD/"data"/"eu_composed_data_country_level.pkl")
-@pytask.mark.produces(BLD/"figures"/"plot_german_mobility.png")
+@pytask.mark.produces(BLD/"figures"/"German_Mobility"/"plot_overall_german_mobility.png")
 def task_plot_german_mobility(depends_on, produces):
     # Load EU data and keep German data only
     eu_country_level_data = pd.read_pickle(depends_on)
