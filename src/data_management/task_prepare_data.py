@@ -61,7 +61,7 @@ def create_date(data,date_name="date"):
     return(out)
 
 
-def create_mvg_avg(data,varlist,grouping_var,kind="backward",time=7):
+def create_moving_average(data,varlist,grouping_var,kind="backward",time=7):
     """
     Adds variables of moving average to dataframe
     
@@ -112,7 +112,7 @@ def task_prepare_owid_data(depends_on, produces):
     eu_infect_numbers = eu_infect_numbers.set_index(["country", "date"])
 
     # # Generate 7-day simple moving average 
-    create_mvg_avg(eu_infect_numbers,["new_cases"],"country",kind="forward",time=7)
+    create_moving_average(eu_infect_numbers,["new_cases"],"country",kind="forward",time=7)
 
     # Save dataframe as csv
     eu_infect_numbers.to_pickle(produces)
@@ -172,7 +172,7 @@ def task_prepare_data(depends_on, produces):
 
     germany_state_level = germany_state_level.drop("country")
 
-    germany_state_level = create_mvg_avg(germany_state_level,['retail_and_recreation','grocery_and_pharmacy', 'parks', 'transit_stations', 'workplaces','residential'],"state",kind="forward")
+    germany_state_level = create_moving_average(germany_state_level,['retail_and_recreation','grocery_and_pharmacy', 'parks', 'transit_stations', 'workplaces','residential'],"state",kind="forward")
     germany_state_level.to_pickle(produces["german_states"])
 
     # Create dataset for comparison between different european countries
@@ -181,7 +181,7 @@ def task_prepare_data(depends_on, produces):
     eu_country_level_data = eu_country_level_data.drop(["sub_region_1","sub_region_2","metro_area","iso_3166_2_code"],axis=1)
 
     # Create moving average
-    eu_country_level_data = create_mvg_avg(eu_country_level_data,['retail_and_recreation','grocery_and_pharmacy', 'parks', 'transit_stations', 'workplaces','residential'],"country",kind="forward")
+    eu_country_level_data = create_moving_average(eu_country_level_data,['retail_and_recreation','grocery_and_pharmacy', 'parks', 'transit_stations', 'workplaces','residential'],"country",kind="forward")
     
     # Load in infection numbers
     eu_infect_numbers = pd.read_pickle(depends_on["infection"])
@@ -199,7 +199,7 @@ def task_prepare_data(depends_on, produces):
 def task_prepare_stringency_data(depends_on, produces):
     stringency_data = pd.read_csv(depends_on)
     stringency_data = stringency_data.set_index("country")
-    stringency_data = create_mvg_avg(stringency_data,["stringency_index"],grouping_var="country",kind="forward",time=7)
+    stringency_data = create_moving_average(stringency_data,["stringency_index"],grouping_var="country",kind="forward",time=7)
     german_stringency_data = stringency_data.loc["Germany"].drop("country_code", axis=1)
     german_stringency_data.to_pickle(produces)
 
