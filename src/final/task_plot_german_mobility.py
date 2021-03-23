@@ -58,12 +58,12 @@ def mobility_plot(data_set, var_list_moving_avg, path, fig_width = 20, fig_heigh
         plt.savefig(path)
 
 
-@pytask.mark.depends_on(BLD/"data"/"eu_composed_data_country_level.csv")
+@pytask.mark.depends_on(BLD/"data"/"eu_composed_data_country_level.pkl")
 @pytask.mark.produces(BLD/"figures"/"plot_german_mobility.png")
 def task_plot_german_mobility(depends_on, produces):
     # Load EU data and keep German data only
-    eu_country_level_data = pd.read_csv(depends_on)
-    eu_country_level_data["date"] = list(map(lambda x: datetime.strptime(x,"%Y-%m-%d"),eu_country_level_data["date"]))
+    eu_country_level_data = pd.read_pickle(depends_on)
+    #eu_country_level_data["date"] = list(map(lambda x: datetime.strptime(x,"%Y-%m-%d"),eu_country_level_data["date"]))
     eu_country_level_data = eu_country_level_data.set_index(["country", "date"])
     germany_country_level_data = eu_country_level_data.loc["Germany"]
 
@@ -90,13 +90,14 @@ products = {
     "four_regions": BLD/"figures"/"German_Mobility"/"four_regions.png",
 }
 
-@pytask.mark.depends_on(BLD/"data"/"german_states_data.csv")
+@pytask.mark.depends_on(BLD/"data"/"german_states_data.pkl")
 @pytask.mark.produces(products)
 def task_plot_german_states_mobility(depends_on, produces):
     # Load EU data and keep German data only
-    germany_state_level = pd.read_csv(depends_on)
-    germany_state_level["date"] = list(map(lambda x: datetime.strptime(x,"%Y-%m-%d"),germany_state_level["date"]))
-    germany_state_level = germany_state_level.set_index("date")
+    germany_state_level = pd.read_pickle(depends_on)
+    #germany_state_level["date"] = list(map(lambda x: datetime.strptime(x,"%Y-%m-%d"),germany_state_level["date"]))
+    #germany_state_level = germany_state_level.set_index("date")
+    germany_state_level = germany_state_level.reset_index(0) 
 
     # City states comparison (unaggregated)
     mobility_plot(data_set = germany_state_level.loc[germany_state_level["city_noncity"] == "city state"], var_list_moving_avg = varlist_moving_avg, fig_width = 20, fig_height = 40, path = produces["city_state"])
