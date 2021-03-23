@@ -86,7 +86,7 @@ def create_moving_average(data,varlist,grouping_var,kind="backward",time=7):
     if kind == "forward":
     
         out[varlist_moving_avg] = out[varlist].apply(lambda x: x[::-1].groupby(level=grouping_var).rolling(time).mean()[::-1],axis=0).sort_index(0).reset_index(level=0, drop=True).to_numpy()    
-    
+    out = out.sort_index()
     return(out)
 
 
