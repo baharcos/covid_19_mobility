@@ -20,12 +20,7 @@ titles = ['Retail and Recreation (7d-average)', 'Grocery and Pharmacy (7d-averag
 varlist_moving_avg = ['retail_and_recreation_avg_7d',
        'grocery_and_pharmacy_avg_7d', 'workplaces_avg_7d',
        'parks_avg_7d' , 'residential_avg_7d','transit_stations_avg_7d']
-
-# Delete this afterwards, this is just so that code runs through so far (because of missing data)
-varlist_moving_avg = ['retail_and_recreation',
-       'grocery_and_pharmacy', 'workplaces',
-       'parks' , 'residential','transit_stations']
-
+       
 
 
 def mobility_plot(data_set, var_list_moving_avg, path, fig_width = 20, fig_height = 40,group_var="state"):
