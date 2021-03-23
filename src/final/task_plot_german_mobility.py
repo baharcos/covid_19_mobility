@@ -96,7 +96,7 @@ def task_plot_german_states_mobility(depends_on, produces):
     # Load EU data and keep German data only
     germany_state_level = pd.read_pickle(depends_on)
     #germany_state_level["date"] = list(map(lambda x: datetime.strptime(x,"%Y-%m-%d"),germany_state_level["date"]))
-    #germany_state_level = germany_state_level.set_index("date")
+    #germany_state_level = germany_state_level.set_index("date")  # this and the above column are needed if switching back to csv instead of pickle
     germany_state_level = germany_state_level.reset_index(0) 
 
     # City states comparison (unaggregated)
