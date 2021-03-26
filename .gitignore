@@ -5,6 +5,7 @@
 *.bcf
 *.bib_*.utf8
 *.blg
+*.csv
 *.dvi
 *.ent
 *.fff

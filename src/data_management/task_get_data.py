@@ -22,7 +22,7 @@ google_url = "https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.cs
 owid_url = "https://covid.ourworldindata.org/data/owid-covid-data.csv"
 
 
-@pytask.mark.produces(SRC / 'original_data"/"google_data.csv')
+@pytask.mark.produces(SRC / "original_data" / "google_data.csv")
 def task_get_google_data(produces):
     df = pd.read_csv(google_url)
     df.to_csv(produces)
@@ -54,7 +54,6 @@ def task_get_stringency_index_data(produces):
     data_unformatted = stringency_response.content
 
     data_unformatted = data_unformatted.decode("UTF-8")
-
     data_unformatted_split = data_unformatted.split(',"entityKey":')
     data_unformatted_variables = data_unformatted_split[0]
     data_unformatted_entities = data_unformatted_split[1]
