@@ -4,7 +4,6 @@ The data collected here includes:
 1. Google mobility index
 2. Our World in Data (OWID) infection numbers
 3. Our World in Data (OWID) stringency index
-
 """
 import re
 from datetime import datetime
@@ -37,7 +36,7 @@ def task_get_owid_data(produces):
 
 @pytask.mark.produces(SRC / "original_data" / "stringency_index_data.csv")
 def task_get_stringency_index_data(produces):
-    driver = webdriver.Firefox()
+    driver = webdriver.Safari()
     driver.get("https://ourworldindata.org/grapher/covid-stringency-index")
     source_code = driver.page_source
     driver.close()
@@ -64,8 +63,8 @@ def task_get_stringency_index_data(produces):
         '{"variables":{"142679":', ""
     )
 
-    data_unformatted_variables_dict = re.findall(
-        '(.*),"id"",data_unformatted_variables)[0] + "}'
+    data_unformatted_variables_dict = (
+        re.findall('(.*),"id"', data_unformatted_variables)[0] + "}"
     )
     data_unformatted_metadata = data_unformatted_variables.replace(
         data_unformatted_variables_dict[:-1], ""
