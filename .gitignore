@@ -18,6 +18,7 @@
 *.lot
 *.mod
 *.nav
+*.csv
 *.o
 *.out
 *.pdf
