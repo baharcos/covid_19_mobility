@@ -190,9 +190,11 @@ def task_prepare_data(depends_on, produces):
     # Join the two datasets
     eu_composed_data_country_level = eu_country_level_data.join(eu_infect_numbers)
     eu_composed_data_country_level = eu_composed_data_country_level.reset_index()
+    eu_composed_data_country_level = eu_composed_data_country_level.drop("Unnamed: 0",axis=1)
 
+    # Export the data to pickle format
     eu_composed_data_country_level.to_pickle(produces["eu_country_level"])
-
+    
 
 @pytask.mark.depends_on(SRC /"original_data"/"stringency_index_data.csv")
 @pytask.mark.produces(BLD /"data"/"german_stringency_data.pkl")
@@ -201,6 +203,7 @@ def task_prepare_stringency_data(depends_on, produces):
     stringency_data = stringency_data.set_index("country")
     stringency_data = create_moving_average(stringency_data,["stringency_index"],grouping_var="country",kind="forward",time=7)
     german_stringency_data = stringency_data.loc["Germany"].drop("country_code", axis=1)
+
     german_stringency_data.to_pickle(produces)
 
 

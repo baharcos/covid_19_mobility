@@ -1,5 +1,6 @@
 '''
-This task ...
+This task runs the regressions to identify lockdown fatigue. 
+
 '''
 import pandas as pd
 import numpy as np
@@ -8,6 +9,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import pytask
+
 from collections import Counter
 from ordered_set import OrderedSet
 from stargazer.stargazer import Stargazer
@@ -16,11 +18,87 @@ from src.config import SRC
 from datetime import datetime
 from datetime import timedelta
 
-def prepare_regression_data(german_country_mobility):
-    germany_mobility_country_level = pd.read_csv(german_country_mobility, parse_dates=True)
 
-    regression_data = germany_mobility_country_level
-    #regression_data = pd.merge(germany_mobility_country_level,data_stringency_germany,left_index=True,right_index=True)
+# %% 
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+import pytask
+
+from collections import Counter
+from ordered_set import OrderedSet
+from stargazer.stargazer import Stargazer
+from src.config import BLD
+from src.config import SRC
+from datetime import datetime
+from datetime import timedelta
+
+new_dict = {"1":"Hallo","2":"Du"}
+[*new_dict]
+
+
+
+# %%
+
+#@pytask.mark.depends_on({"eu_composed_data_country_level": BLD/"data"/"eu_composed_data_country_level.pkl", "stringency_data":BLD/"data"/"german_stringency_data.pkl","lockdowns_dates":SRC/"model_specifications"/"time_lockdowns.pkl"})
+def prepare_regression_data(data_composed,stringency_data,dates_lockdowns):
+    """
+    Creates dataframe with all necessary variables (especially time variables) for regression
+
+    Input:
+    data_composed (df): dataframe containing mobility and infection data
+    stringency_data (df): dataframe containing stringency data
+    dates_lockdowns (dict): dictionary containing start and end points of lockdowns
+
+    Output:
+    regression_data(df): dataframe which contains all variables necessary for regression
+
+    """
+
+    # Read in necessary data
+    eu_composed_country_level = pd.read_pickle(data_composed)
+    stringency_data = pd.read_pickle(stringency_data)
+    dates_lockdowns = pd.read_pickle(dates_lockdowns)
+
+    germany_composed_country_level = eu_composed_country_level.loc[eu_composed_country_level["country"] == "Germany",]
+    germany_composed_country_level = germany_composed_country_level.set_index("date")
+
+    stringency_data = stringency_data.reset_index()
+    stringency_data = stringency_data.drop("country",axis=1)
+    stringency_data["date"] = stringency_data["date"].apply(lambda x: datetime.strptime(x, "%Y-%m-%d"))
+    stringency_data["date"] = list(map(lambda x: x.date(), stringency_data["date"]))
+    stringency_data = stringency_data.set_index("date")
+
+    # Merge the two datasets
+    regression_data = pd.merge(germany_composed_country_level,stringency_data,left_index=True,right_index=True)
+
+    # Drop unnecessary variables
+    regression_data = regression_data.drop(["country","country_region_code","place_id"],axis=1)
+
+    # Create necessary time variables
+    lockdown_names = [*dates_lockdowns]
+    #lockdown_7days_moving_average_names = [map(lambda x: x + "_7days_moving_average",lockdown_names)]
+
+    #lockdown_duration_names = [map(lambda x: x + "_duration",lockdown_names)]
+    #lockdown_duration_7days_moving_average_duration_names = [map(lambda x: x + "_duration",lockdown_7days_moving_average_names)]
+
+    for lockdown in lockdown_names:
+
+        lockdown_duration_name = lockdown + "_duration"
+        lockdown_7days_moving_average_name = lockdown + "_7days_moving_average"
+        lockdown_7days_moving_average_duration_name = lockdown_7days_moving_average_name + "duration"
+
+        regression_data[lockdown] = ((regression_data.index >= datetime.strptime(dates_lockdowns[lockdown][0],"%Y-%m-%d")) & (regression_data.index <= datetime.strptime(dates_lockdowns[lockdown][1],"%Y-%m-%d"))).astype(int)
+        regression_data[lockdown_7days_moving_average_name] = ((regression_data.index >= datetime.strptime(dates_lockdowns[lockdown][0],"%Y-%m-%d")) & (regression_data.index <= datetime.strptime(dates_lockdowns[lockdown][1],"%Y-%m-%d") - timedelta(7))).astype(int)
+        
+        regression_data[lockdown_duration_name] = 0
+        regression_data.loc[regression_data[lockdown] == 1, lockdown_duration_name] = regression_data.loc[regression_data[lockdown] == 1].reset_index().index + 1
+        regression_data[lockdown_7days_moving_average_duration_name] = 0
+        regression_data.loc[regression_data[lockdown_7days_moving_average_name] == 1, lockdown_7days_moving_average_duration_name] = regression_data.loc[regression_data[lockdown_7days_moving_average_name] == 1].reset_index().index + 1
+        
     return(regression_data)
 
 def ols_regression_formatted(data,specifications, as_latex=False, covariates_names=None, covariates_order=None):
@@ -43,7 +121,6 @@ def ols_regression_formatted(data,specifications, as_latex=False, covariates_nam
     dict_regression_tables = {}
     
     # Generate regressions
-    
     for depvar in specifications.keys():
         
         regression_list = []
@@ -98,12 +175,17 @@ def ols_regression_formatted(data,specifications, as_latex=False, covariates_nam
                 
     return(dict_regression_tables)
 
-@pytask.mark.depends_on({"german_states_mobility": BLD/"data"/"german_states_data.pkl",  "stringency": BLD/"data"/"german_stringency_data.pkl"})
+#@pytask.mark.depends_on({"german_states_mobility": SRC/"original_data"/"german_states_data.csv"})
+@pytask.mark.depends_on({"eu_composed_data_country_level": BLD/"data"/"eu_composed_data_country_level.pkl", "stringency_data":BLD/"data"/"german_stringency_data.pkl","dates_lockdowns":SRC/"model_specs"/"time_lockdowns.pkl"})
 @pytask.mark.produces(BLD/"data"/"regression_data.csv")
 def task_create_regression_data(depends_on, produces):
-    regression_data = prepare_regression_data(german_country_mobility=depends_on["german_states_mobility"])
-    regression_data.to_csv(produces)    
+    regression_data = prepare_regression_data(data_composed=depends_on["eu_composed_data_country_level"], stringency_data=depends_on["stringency_data"],dates_lockdowns=depends_on["dates_lockdowns"]) 
+    regression_data.to_csv(produces)
 
+# @pytask.mark.depends_on({"regression_data": BLD/"data"/"regression_data.pkl"})
+# def task_run_regressions(depends_on, produces):
+#     regression_tables = ols_regression_formatted(data=depends_on["regression_data"],specifications, as_latex=False, covariates_names=None, covariates_order=None)
+    
 
 # @pytask.mark.produces(BLD/"data"/"regression_data.pkl")
 # def task_create_regression_tables(depends_on, produces):
