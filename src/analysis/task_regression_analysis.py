@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import pytask
+import pickle
 
 from collections import Counter
 from ordered_set import OrderedSet
@@ -20,26 +21,35 @@ from datetime import timedelta
 
 
 # %% 
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-import pytask
+# import pandas as pd
+# import numpy as np
+# import seaborn as sns
+# import matplotlib.pyplot as plt
+# import statsmodels.api as sm
+# import statsmodels.formula.api as smf
+# import pytask
+# import pickle
 
-from collections import Counter
-from ordered_set import OrderedSet
-from stargazer.stargazer import Stargazer
-from src.config import BLD
-from src.config import SRC
-from datetime import datetime
-from datetime import timedelta
+# from collections import Counter
+# from ordered_set import OrderedSet
+# from stargazer.stargazer import Stargazer
+# from src.config import BLD
+# from src.config import SRC
+# from datetime import datetime
+# from datetime import timedelta
 
-new_dict = {"1":"Hallo","2":"Du"}
-[*new_dict]
+# produces_dictionary_export = {}
+# all_regression_tables_latex_file = open(BLD/"tables"/"all_regression_tables_latex.pkl","rb")
+# all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
+# all_regression_tables_latex_file.close()
 
+# produces_dictionary_export = {}
+# for dependent_variable in [*all_regression_tables_latex]:
+#     produces_name = "table_regression_" + dependent_variable
+#     produces_file_name = produces_name + ".tex"
+#     produces_dictionary_export[produces_name] = SRC/"paper"/"tables"/produces_file_name
 
+# print([*produces_dictionary_export])
 
 # %%
 
@@ -51,19 +61,15 @@ def prepare_regression_data(data_composed,stringency_data,dates_lockdowns):
     Input:
     data_composed (df): dataframe containing mobility and infection data
     stringency_data (df): dataframe containing stringency data
-    dates_lockdowns (dict): dictionary containing start and end points of lockdowns
+    dates_lockdowns (dict): dictionary with lockdowns as keys and their start and end dates as values stored in a list
 
     Output:
-    regression_data(df): dataframe which contains all variables necessary for regression
+    regression_data (df): dataframe which contains all variables necessary for regression
 
     """
 
-    # Read in necessary data
-    eu_composed_country_level = pd.read_pickle(data_composed)
-    stringency_data = pd.read_pickle(stringency_data)
-    dates_lockdowns = pd.read_pickle(dates_lockdowns)
-
-    germany_composed_country_level = eu_composed_country_level.loc[eu_composed_country_level["country"] == "Germany",]
+    # Prepare datasets for merge
+    germany_composed_country_level = data_composed.loc[data_composed["country"] == "Germany",]
     germany_composed_country_level = germany_composed_country_level.set_index("date")
 
     stringency_data = stringency_data.reset_index()
@@ -79,11 +85,8 @@ def prepare_regression_data(data_composed,stringency_data,dates_lockdowns):
     regression_data = regression_data.drop(["country","country_region_code","place_id"],axis=1)
 
     # Create necessary time variables
+    
     lockdown_names = [*dates_lockdowns]
-    #lockdown_7days_moving_average_names = [map(lambda x: x + "_7days_moving_average",lockdown_names)]
-
-    #lockdown_duration_names = [map(lambda x: x + "_duration",lockdown_names)]
-    #lockdown_duration_7days_moving_average_duration_names = [map(lambda x: x + "_duration",lockdown_7days_moving_average_names)]
 
     for lockdown in lockdown_names:
 
@@ -98,7 +101,7 @@ def prepare_regression_data(data_composed,stringency_data,dates_lockdowns):
         regression_data.loc[regression_data[lockdown] == 1, lockdown_duration_name] = regression_data.loc[regression_data[lockdown] == 1].reset_index().index + 1
         regression_data[lockdown_7days_moving_average_duration_name] = 0
         regression_data.loc[regression_data[lockdown_7days_moving_average_name] == 1, lockdown_7days_moving_average_duration_name] = regression_data.loc[regression_data[lockdown_7days_moving_average_name] == 1].reset_index().index + 1
-        
+
     return(regression_data)
 
 def ols_regression_formatted(data,specifications, as_latex=False, covariates_names=None, covariates_order=None):
@@ -134,20 +137,16 @@ def ols_regression_formatted(data,specifications, as_latex=False, covariates_nam
             regression_list.append(regression)
             
             # Create set of all variables for this dependent variable
-            
             list_all_covariates = list(set(list_all_covariates + regression.params.index.values.tolist()))
             
         # Format table with stargazer
-        
         formatted_table = Stargazer(regression_list)
 
-            # No dimension of freedoms and blank dependent variable
-        
+        # No dimension of freedoms and blank dependent variable
         formatted_table.show_degrees_of_freedom(False)
         formatted_table.dependent_variable_name("")
         
-            # Optional: Change order of covariates
-        
+        # Optional: Change order of covariates
         if covariates_order != None:
             
             covariates_order_depvar = list(OrderedSet(covariates_order).intersection(list_all_covariates))
@@ -158,17 +157,19 @@ def ols_regression_formatted(data,specifications, as_latex=False, covariates_nam
             
             formatted_table.covariate_order(covariates_sorted)
         
-            # Optional: Change name of covariates
-            
+        # Optional: Change name of covariates    
         if covariates_names != None: 
             
             formatted_table.rename_covariates(covariates_names)
-                  
-            # Add table or latex code to dictionary 
             
+        # Add table or latex code to dictionary     
         if as_latex == True: 
             
             dict_regression_tables[depvar] = formatted_table.render_latex()
+            
+            # Delete tabular environment around it
+            dict_regression_tables[depvar] = dict_regression_tables[depvar].replace("\\begin{table}[!htbp] \\centering\n","")
+            dict_regression_tables[depvar] = dict_regression_tables[depvar].replace("\\end{table}","")
         
         else:
             dict_regression_tables[depvar] = formatted_table
@@ -177,96 +178,54 @@ def ols_regression_formatted(data,specifications, as_latex=False, covariates_nam
 
 #@pytask.mark.depends_on({"german_states_mobility": SRC/"original_data"/"german_states_data.csv"})
 @pytask.mark.depends_on({"eu_composed_data_country_level": BLD/"data"/"eu_composed_data_country_level.pkl", "stringency_data":BLD/"data"/"german_stringency_data.pkl","dates_lockdowns":SRC/"model_specs"/"time_lockdowns.pkl"})
-@pytask.mark.produces(BLD/"data"/"regression_data.csv")
+@pytask.mark.produces(BLD/"data"/"regression_data.pkl")
 def task_create_regression_data(depends_on, produces):
-    regression_data = prepare_regression_data(data_composed=depends_on["eu_composed_data_country_level"], stringency_data=depends_on["stringency_data"],dates_lockdowns=depends_on["dates_lockdowns"]) 
-    regression_data.to_csv(produces)
+    eu_composed_country_level = pd.read_pickle(depends_on["eu_composed_data_country_level"])
+    stringency_data = pd.read_pickle(depends_on["stringency_data"])
+    dates_lockdowns = pd.read_pickle(depends_on["dates_lockdowns"])
+    regression_data = prepare_regression_data(data_composed=eu_composed_country_level, stringency_data=stringency_data,dates_lockdowns=dates_lockdowns) 
+    regression_data.to_pickle(produces)
 
-# @pytask.mark.depends_on({"regression_data": BLD/"data"/"regression_data.pkl"})
-# def task_run_regressions(depends_on, produces):
-#     regression_tables = ols_regression_formatted(data=depends_on["regression_data"],specifications, as_latex=False, covariates_names=None, covariates_order=None)
+@pytask.mark.depends_on({"regression_data": BLD/"data"/"regression_data.pkl","regression_specifications":SRC/"model_specs"/"regression_models.pkl","regression_variable_names":SRC/"model_specs"/"regression_variable_names.pkl"})
+@pytask.mark.produces({"all_regression_tables":BLD/"tables"/"all_regression_tables.pkl","all_regression_tables_latex":BLD/"tables"/"all_regression_tables_latex.pkl"})
+def task_run_regressions(depends_on, produces):
+    # Import data
+    regression_data = pd.read_pickle(depends_on["regression_data"])
+    regression_specifications = pd.read_pickle(depends_on["regression_specifications"])
+    regression_variable_names = pd.read_pickle(depends_on["regression_variable_names"])
+
+    all_regression_tables = ols_regression_formatted(data=regression_data,specifications=regression_specifications, as_latex=False, covariates_names=regression_variable_names, covariates_order=[*regression_variable_names])
+    all_regression_tables_latex = ols_regression_formatted(data=regression_data,specifications=regression_specifications, as_latex=True, covariates_names=regression_variable_names, covariates_order=[*regression_variable_names])
     
+    all_regression_tables_file = open(produces["all_regression_tables"],"wb")    
+    pickle.dump(all_regression_tables,all_regression_tables_file)
 
-# @pytask.mark.produces(BLD/"data"/"regression_data.pkl")
-# def task_create_regression_tables(depends_on, produces):
+    all_regression_tables_latex_file = open(produces["all_regression_tables_latex"],"wb")    
+    pickle.dump(all_regression_tables_latex,all_regression_tables_latex_file)
 
-#     # Define important time points
 
-#     first_ld_begin = pd.to_datetime('2020-03-02')
-#     first_ld_end = pd.to_datetime('2020-05-03')
-#     first_ld_end_7d = first_ld_end - timedelta(7)
+# Create "produces" dictionary for export of tables
+produces_dictionary_export = {}
+all_regression_tables_latex_file = open(BLD/"tables"/"all_regression_tables_latex.pkl","rb")
+all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
+all_regression_tables_latex_file.close()
 
-#     second_ld_begin = pd.to_datetime('2020-12-09')
-#     second_ld_end = pd.to_datetime('2021-02-22')
-#     second_ld_end_7d = second_ld_end - timedelta(7)
+produces_dictionary_export = {}
+for dependent_variable in [*all_regression_tables_latex]:
+    produces_name = "table_regression_" + dependent_variable
+    produces_file_name = produces_name + ".tex"
+    produces_dictionary_export[produces_name] = SRC/"paper"/"tables"/produces_file_name
 
-#     light_ld_begin = pd.to_datetime('2020-10-15')
+print(produces_dictionary_export)
 
-#     #first_ld_begin = pd.to_datetime('2020-03-22')
-#     #first_ld_end = pd.to_datetime('2020-05-03')
-#     #first_ld_end_7d = first_ld_end - timedelta(7)
+@pytask.mark.depends_on(BLD/"tables"/"all_regression_tables_latex.pkl")
+@pytask.mark.produces(produces_dictionary_export)
+def task_export_regression_tables(depends_on, produces):
 
-#     #second_ld_begin = pd.to_datetime('2020-12-16')
-#     #second_ld_end = pd.to_datetime('2021-02-22')
-#     #second_ld_end_7d = second_ld_end - timedelta(7)
+    all_regression_tables_latex_file = open(depends_on,"rb")
+    all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
 
-#     #light_ld_begin = pd.to_datetime('2020-10-15')
-
-#     # Create time variables
-
-#     regression_data["first_ld"] = ((regression_data.index >= first_ld_begin) & (regression_data.index <= first_ld_end_7d)).astype(int)
-#     regression_data["second_ld"] = ((regression_data.index >= second_ld_begin) & (regression_data.index <= second_ld_end_7d)).astype(int)
-#     regression_data["light_ld"] = ((regression_data.index >= light_ld_begin) & (regression_data.index <= second_ld_begin)).astype(int)
-
-#     regression_data["first_ld_duration"] = 0
-#     regression_data.loc[regression_data["first_ld"] == 1, "first_ld_duration"] = regression_data.loc[regression_data["first_ld"] == 1].reset_index().index +1
-
-#     regression_data["second_ld_duration"] = 0
-#     regression_data.loc[regression_data["second_ld"] == 1, "second_ld_duration"] = regression_data.loc[regression_data["second_ld"] == 1].reset_index().index +1
-
-#     regression_data["light_ld_duration"] = 0
-#     regression_data.loc[regression_data["light_ld"] == 1, "light_ld_duration"] = regression_data.loc[regression_data["light_ld"] == 1].reset_index().index +1
-
-#         # Specify dependent variables
-
-#     depvars = ["workplaces_avg_7d","retail_and_recreation_avg_7d","grocery_and_pharmacy_avg_7d","transit_stations_avg_7d","residential_avg_7d"]
-
-#          # Set up model specifications
-
-#     model_baseline = "first_ld + second_ld  + first_ld_duration * stringency_index_avg_7d + second_ld_duration * stringency_index_avg_7d"
-#     model_lockdown_interaction = "first_ld * stringency_index_avg_7d + first_ld_duration * stringency_index_avg_7d + second_ld * stringency_index_avg_7d + second_ld_duration * stringency_index_avg_7d"
-#     model_light_ld = "first_ld * stringency_index_avg_7d + first_ld_duration * stringency_index_avg_7d + second_ld * stringency_index_avg_7d + second_ld_duration * stringency_index_avg_7d + light_ld + light_ld_duration"
-#     model_cases = "first_ld * stringency_index_avg_7d + first_ld_duration * stringency_index_avg_7d + second_ld * stringency_index_avg_7d + second_ld_duration * stringency_index_avg_7d + light_ld + light_ld_duration + new_cases_avg_7d"
-#     model_cases_cubic = "first_ld * stringency_index_avg_7d + first_ld_duration * stringency_index_avg_7d + second_ld * stringency_index_avg_7d + second_ld_duration * stringency_index_avg_7d + light_ld + light_ld_duration + new_cases_avg_7d + np.power(new_cases_avg_7d,2) + np.power(new_cases_avg_7d,3)"
-
-#         # Create specification dictionary
-
-#     dict_specifications = {}
-
-#     for depvar in depvars:
-#         dict_specifications[depvar] = [model_baseline,model_lockdown_interaction,model_light_ld,model_cases,model_cases_cubic]
-
-#         # Create dict with names and get order of variables
-
-#     naming_dict = { "first_ld_duration:stringency_index_avg_7d":"1st Lockdown Duration x Stringency" ,
-#     "second_ld_duration:stringency_index_avg_7d":"2nd Lockdown Duration x Stringency",
-#     "stringency_index_avg_7d":"Stringency",
-#     "first_ld":"1st Lockdown",
-#     "second_ld":"2nd Lockdown",
-#     "first_ld_duration":"1st Lockdown Duration",
-#     "second_ld_duration":"2nd Lockdown Duration",
-#     "first_ld:stringency_index_avg_7d":"1st Lockdown x Stringency",
-#     "second_ld:stringency_index_avg_7d":"2nd Lockdown x Stringency",
-#     "light_ld":"Light Lockdown",
-#     "light_ld_duration":"Light Lockdown Duration",
-#     "new_cases_avg_7d":"New cases",
-#     "np.power(new_cases_avg_7d, 2)":"New cases Squared",
-#     "np.power(new_cases_avg_7d, 3)":"New cases Cubic",
-#     }
-
-#     variable_order = list(naming_dict.keys())
-
-#         # Create final tables
-
-#     final_tables = ols_regression_formatted(data=regression_data,specifications=dict_specifications, as_latex=False, covariates_names=naming_dict, covariates_order=variable_order)
-#     final_tables_latex = ols_regression_formatted(data=regression_data,specifications=dict_specifications, as_latex=True, covariates_names=naming_dict, covariates_order=variable_order)
+    for produces_name in [*produces]:
+        dependent_variable = produces_name.replace("table_regression_","")
+        regression_table_latex_file = open("/Users/timohaller/Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/bld/tables/new.pkl","wb")
+        #regression_table_latex_file.write(bytes(all_regression_tables_latex[dependent_variable],"utf-8"))
