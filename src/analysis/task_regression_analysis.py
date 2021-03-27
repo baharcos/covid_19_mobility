@@ -19,41 +19,6 @@ from src.config import SRC
 from datetime import datetime
 from datetime import timedelta
 
-
-# %% 
-# import pandas as pd
-# import numpy as np
-# import seaborn as sns
-# import matplotlib.pyplot as plt
-# import statsmodels.api as sm
-# import statsmodels.formula.api as smf
-# import pytask
-# import pickle
-
-# from collections import Counter
-# from ordered_set import OrderedSet
-# from stargazer.stargazer import Stargazer
-# from src.config import BLD
-# from src.config import SRC
-# from datetime import datetime
-# from datetime import timedelta
-
-# produces_dictionary_export = {}
-# all_regression_tables_latex_file = open(BLD/"tables"/"all_regression_tables_latex.pkl","rb")
-# all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
-# all_regression_tables_latex_file.close()
-
-# produces_dictionary_export = {}
-# for dependent_variable in [*all_regression_tables_latex]:
-#     produces_name = "table_regression_" + dependent_variable
-#     produces_file_name = produces_name + ".tex"
-#     produces_dictionary_export[produces_name] = SRC/"paper"/"tables"/produces_file_name
-
-# print([*produces_dictionary_export])
-
-# %%
-
-#@pytask.mark.depends_on({"eu_composed_data_country_level": BLD/"data"/"eu_composed_data_country_level.pkl", "stringency_data":BLD/"data"/"german_stringency_data.pkl","lockdowns_dates":SRC/"model_specifications"/"time_lockdowns.pkl"})
 def prepare_regression_data(data_composed,stringency_data,dates_lockdowns):
     """
     Creates dataframe with all necessary variables (especially time variables) for regression
