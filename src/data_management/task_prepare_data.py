@@ -114,7 +114,7 @@ def task_prepare_owid_data(depends_on, produces):
     # # Generate 7-day simple moving average 
     create_moving_average(eu_infect_numbers,["new_cases"],"country",kind="forward",time=7)
 
-    # Save dataframe as csv
+    # Save dataframe as pickle file
     eu_infect_numbers.to_pickle(produces)
 
 
