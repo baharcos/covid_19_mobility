@@ -156,14 +156,24 @@ def task_run_regressions(depends_on, produces):
     pickle.dump(all_regression_tables_latex, all_regression_tables_latex_file)
 
 
-
 @pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
-@pytask.mark.produces({"workplaces_avg_7d": BLD / "tables" / "regression_table_workplaces_avg_7d.tex",
-"retail_and_recreation_avg_7d": BLD / "tables" / "regression_table_retail_and_recreation_avg_7d_avg_7d.tex",
-"residential_avg_7d": BLD / "tables" / "regression_table_residential_avg_7d_avg_7d.tex",
-"grocery_and_pharmacy_avg_7d": BLD / "tables" / "regression_table_grocery_and_pharmacy_avg_7d_avg_7d.tex",
-"transit_stations_avg_7d": BLD / "tables" / "regression_table_transit_stations_avg_7d_avg_7d.tex",
-})
+@pytask.mark.produces(
+    {
+        "workplaces_avg_7d": BLD / "tables" / "regression_table_workplaces_avg_7d.tex",
+        "retail_and_recreation_avg_7d": BLD
+        / "tables"
+        / "regression_table_retail_and_recreation_avg_7d_avg_7d.tex",
+        "residential_avg_7d": BLD
+        / "tables"
+        / "regression_table_residential_avg_7d_avg_7d.tex",
+        "grocery_and_pharmacy_avg_7d": BLD
+        / "tables"
+        / "regression_table_grocery_and_pharmacy_avg_7d_avg_7d.tex",
+        "transit_stations_avg_7d": BLD
+        / "tables"
+        / "regression_table_transit_stations_avg_7d_avg_7d.tex",
+    }
+)
 def task_export_regression_tables(depends_on, produces):
 
     all_regression_tables_latex_file = open(depends_on, "rb")

@@ -14,12 +14,21 @@ from estimagic.visualization.colors import get_colors
 
 from src.config import BLD
 
-def mobility_plot(data_set, var_list_moving_avg, titles, colors, group_var, fig_width=20, fig_height=40):
+
+def mobility_plot(
+    data_set,
+    var_list_moving_avg,
+    titles,
+    colors,
+    group_var,
+    fig_width=20,
+    fig_height=40,
+):
     """Creating multiple plots in one figure for a given data frame, titles and colors have to be defined
     before using the function
 
     Args:
-        data_set (pandas.DataFrame): 
+        data_set (pandas.DataFrame):
         var_list_moving_avg ([type]): which variables the figures should be created for
         fig_width (int, optional): Define figure width. Defaults to 20.
         fig_height (int, optional): Define figure height. Defaults to 40.
@@ -125,13 +134,13 @@ de_products = {
     "four_regions": BLD / "figures" / "German_Mobility" / "four_regions.png",
 }
 
+
 @pytask.mark.depends_on(BLD / "data" / "mobility_germany_states_data.pkl")
 @pytask.mark.produces(de_products)
 def task_plot_german_states_mobility(depends_on, produces):
     # Load EU data and keep German data only
     germany_state_level = pd.read_pickle(depends_on)
-    #germany_state_level = germany_state_level.reset_index(0)
-
+    # germany_state_level = germany_state_level.reset_index(0)
 
     # City versus territorial state comparison (aggregated)
     mobility_plot(
@@ -173,6 +182,7 @@ def task_plot_german_states_mobility(depends_on, produces):
     )
     plt.savefig(produces["four_regions"])
 
+
 # eu_products = {
 #     "small": BLD
 #     / "figures"
@@ -198,24 +208,27 @@ def task_plot_german_states_mobility(depends_on, produces):
 #     large = ["Germany", "France", "United Kingdom", "Italy", "Spain"]
 
 #     mobility_plot(
-#         data_set=eu_complete_data.loc[small].reset_index(0), 
-#         var_list_moving_avg=varlist_moving_avg, 
-#         titles=titles, 
-#         colors=colors, 
+#         data_set=eu_complete_data.loc[small].reset_index(0),
+#         var_list_moving_avg=varlist_moving_avg,
+#         titles=titles,
+#         colors=colors,
 #         group_var="country",
 #     )
 #     plt.savefig(produces["small"])
 
 #     mobility_plot(
-#         data_set=eu_complete_data.loc[large].reset_index(0), 
-#         var_list_moving_avg=varlist_moving_avg, 
-#         titles=titles, 
-#         colors=colors, 
+#         data_set=eu_complete_data.loc[large].reset_index(0),
+#         var_list_moving_avg=varlist_moving_avg,
+#         titles=titles,
+#         colors=colors,
 #         group_var="country",
 #     )
 #     plt.savefig(produces["large"])
 
-# %% 
+# %%
 import pandas as pd
-test = pd.read_pickle("/Users/timohaller/Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/bld/data/mobility_eu_mobility_data.pkl")
+
+test = pd.read_pickle(
+    "/Users/timohaller/Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/bld/data/mobility_eu_mobility_data.pkl"
+)
 test.loc["Germany"]

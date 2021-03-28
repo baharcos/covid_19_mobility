@@ -137,8 +137,6 @@ european_countries = np.array(
 )
 
 
-
-
 def prepare_eu_mobility_data(data):
     """
     Add docstring here
@@ -194,7 +192,7 @@ def prepare_mobility_germany_state_data(data):
     """
     Add docstring here.
     """
-        
+
     out = data.reset_index()
     out = out.set_index("state")
 
@@ -225,6 +223,7 @@ def prepare_mobility_germany_state_data(data):
     out = out.set_index("date", append=True)
 
     return out
+
 
 def prepare_owid_infection_data(data):
     """
@@ -296,8 +295,12 @@ def task_prepare_mobility_data(depends_on, produces):
     germany_state_level_mobility_data = prepare_mobility_germany_state_data(
         germany_state_level_mobility_data
     )
-    germany_state_level_mobility_data.loc[list_city_states, "city_noncity"] = "city state"
-    germany_state_level_mobility_data.loc[list_non_city_states, "city_noncity"] = "territorial state"
+    germany_state_level_mobility_data.loc[
+        list_city_states, "city_noncity"
+    ] = "city state"
+    germany_state_level_mobility_data.loc[
+        list_non_city_states, "city_noncity"
+    ] = "territorial state"
     germany_state_level_mobility_data.loc[list_former_brd, "brd_ddr"] = "former BRD"
     germany_state_level_mobility_data.loc[list_former_ddr, "brd_ddr"] = "former DDR"
     germany_state_level_mobility_data.loc[list_west_germany, "four_regions"] = "West"
@@ -369,9 +372,7 @@ def task_prepare_stringency_data(depends_on, produces):
 
 @pytask.mark.depends_on(
     {
-        "mobility_eu_country_level": BLD
-        / "data"
-        / "mobility_eu_mobility_data.pkl",
+        "mobility_eu_country_level": BLD / "data" / "mobility_eu_mobility_data.pkl",
         "eu_infection_data": BLD / "data" / "eu_infection_data.pkl",
     }
 )
