@@ -29,4 +29,5 @@ src folder includes all the necessary code needed for the analysis:
 6. utils.py includes the the small function we use accross the project.
 7. test_moving_avg.py tests whether we calculate forward moving average correctly. As we use forward moving averages of data for our analysis, this step is taken to 
 ensure there are no calculation mistakes.
+=======
 
