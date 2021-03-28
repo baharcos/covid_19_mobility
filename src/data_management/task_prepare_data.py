@@ -1,5 +1,4 @@
 """Clean and format the previously downloaded data sets for the analysis.
-
 """
 from datetime import datetime
 
@@ -13,14 +12,64 @@ from src.config import SRC
 # from utils import create_date
 # from utils import create_moving_average
 
+list_city_states = ["Berlin", "Bremen", "Hamburg"]
+list_non_city_states = [
+    "Baden-Württemberg",
+    "Bavaria",
+    "Brandenburg",
+    "Hessen",
+    "Lower Saxony",
+    "Mecklenburg-Vorpommern",
+    "North Rhine-Westphalia",
+    "Rhineland-Palatinate",
+    "Saarland",
+    "Saxony",
+    "Saxony-Anhalt",
+    "Schleswig-Holstein",
+    "Thuringia",
+]
+list_former_brd = [
+    "Baden-Württemberg",
+    "Bavaria",
+    "Bremen",
+    "Hamburg",
+    "Hessen",
+    "Lower Saxony",
+    "North Rhine-Westphalia",
+    "Rhineland-Palatinate",
+    "Saarland",
+    "Schleswig-Holstein",
+]
+list_former_ddr = [
+    "Brandenburg",
+    "Mecklenburg-Vorpommern",
+    "Saxony",
+    "Saxony-Anhalt",
+    "Thuringia",
+]
+list_west_germany = [
+    "Hessen",
+    "North Rhine-Westphalia",
+    "Rhineland-Palatinate",
+    "Saarland",
+]
+list_south_germany = ["Baden-Württemberg", "Bavaria"]
+list_north_germany = ["Bremen", "Hamburg", "Lower Saxony", "Schleswig-Holstein"]
+list_east_germany = [
+    "Brandenburg",
+    "Berlin",
+    "Mecklenburg-Vorpommern",
+    "Saxony",
+    "Saxony-Anhalt",
+    "Thuringia",
+]
+
 
 def create_date(data, date_name="date"):
     """Generates and adds date variables: datetime, day, week, weekend, month and year
-
     Args:
         data (pandas.DataFrame): must contain a date column
         date_name (str): Defaults to "date".
-
     Returns:
         pandas.DataFrame: Input dataframe with additional date variables
     """
@@ -46,14 +95,12 @@ def create_date(data, date_name="date"):
 
 def create_moving_average(data, varlist, grouping_var, kind="backward", time=7):
     """Generate moving average variable and add to the data frame
-
     Args:
         data (pandas.DataFrame): variables of varlist, index must contain grouping_var
         varlist (list): variables for which moving average should be calculated
         grouping_var ([type]): [description]
         kind (str): forward or backward. Defaults to "backward".
         time (int): time span for moving average. Defaults to 7.
-
     Returns:
         pandas.DataFrame: Input dataframe with additional moving average variables
     """
@@ -228,7 +275,6 @@ def prepare_mobility_germany_state_data(data):
 def prepare_owid_infection_data(data):
     """
     Add docstring here
-
     """
     # Keep only european countries which are in the Google data
     # eu_infection_data = data.query("location in @european_countries")
@@ -254,7 +300,6 @@ def prepare_owid_infection_data(data):
 def prepare_stringency_data(data):
     """
     Add docstring here
-
     """
     out = create_date(data, "date")
     out["date"] = out["date"].apply(lambda x: x.date())

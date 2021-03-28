@@ -159,19 +159,19 @@ def task_run_regressions(depends_on, produces):
 @pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
 @pytask.mark.produces(
     {
-        "workplaces_avg_7d": BLD / "tables" / "regression_table_workplaces_avg_7d.tex",
+        "workplaces_avg_7d": BLD / "tables" / "table_regression_workplaces_avg_7d.tex",
         "retail_and_recreation_avg_7d": BLD
         / "tables"
-        / "regression_table_retail_and_recreation_avg_7d_avg_7d.tex",
+        / "table_regression_retail_and_recreation_avg_7d.tex",
         "residential_avg_7d": BLD
         / "tables"
-        / "regression_table_residential_avg_7d_avg_7d.tex",
+        / "table_regression_residential_avg_7d.tex",
         "grocery_and_pharmacy_avg_7d": BLD
         / "tables"
-        / "regression_table_grocery_and_pharmacy_avg_7d_avg_7d.tex",
+        / "table_regression_grocery_and_pharmacy_avg_7d.tex",
         "transit_stations_avg_7d": BLD
         / "tables"
-        / "regression_table_transit_stations_avg_7d_avg_7d.tex",
+        / "table_regression_transit_stations_avg_7d.tex",
     }
 )
 def task_export_regression_tables(depends_on, produces):
@@ -180,7 +180,7 @@ def task_export_regression_tables(depends_on, produces):
     all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
 
     for produces_name in [*produces]:
-        dependent_variable = produces_name.replace("regression_table", "")
+        dependent_variable = produces_name.replace("regression_tables", "")
         regression_table_latex_file = open(produces[produces_name], "wb")
         regression_table_latex_file.write(
             bytes(all_regression_tables_latex[dependent_variable], "utf-8")

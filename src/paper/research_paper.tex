@@ -91,6 +91,23 @@
 
 If you are using this template, please cite this item from the references: \citet{GaudeckerEconProjectTemplates}
 
+\newpage
+
+\section{Regression}
+
+This short paragraph provides an explanation on our regression analysis.
+In our analysis we want to identify the effect of lockdown fatigue, which means people reduce their mobility less after a long lockdown history.
+Therefore we estimate the following regression model:
+
+
+$\textit{mobility}_{t} = \beta_{0} + \beta_{1} \textit{LD1}_{t} + \beta_{1} \textit{LD1}_{t} + \beta_{1} \textit{LD1}_{t} \times + \textit{LD1\_Duration}_{t} + \beta_{2} \textit{LD2}_{t} \times \textit{LD2\_Duration}_{t} + \beta_{5} + \gamma \mathbf{X} + \epsilon_{i}$
+
+whereby $\textit{LD1}_{t} $ and $\textit{LD2}_{t}$ denote the second and first lockdown. The variable $\textit{LD1\_Duration}_{t}$ is the duration of the first lockdown (equivalently for $\textit{LD1\_Duration}_{t}$). Furthermore, $\textit{stringency}$ controls for the stringency index. Additional control variables, in particular the infection case number, are summarized in the $\mathbf{X}$ vector. \\
+The marginal effects of interest are $\beta_{2}$ and $\beta_{3}$. We expect $\beta_{3}$ to be positive and $\beta_{2}$ to be zero or even negative. The following section shows the tables for different mobility measures as dependent variables.
+
+
+
+
 
 \newpage
 
