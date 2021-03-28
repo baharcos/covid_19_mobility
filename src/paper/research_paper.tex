@@ -65,7 +65,7 @@
 
 \begin{document}
 
-\title{covid-19 Mobility\thanks{Bahar Coskun, Timo Haller, Anto Marcinkovic, Universitaet Bonn. Email: \href{mailto:s6bacosk@uni-bonn.de, s6tohall@uni-bonn.de, s3anmarc@uni-bonn.de}{\nolinkurl{s6bacosk [at] uni-bonn [dot] de, s6tohall [at] uni-bonn [dot] de, s3anmarc [at] uni-bonn [dot] de}}.}}
+\title{COVID-19 Mobility\thanks{Bahar Coskun, Timo Haller, Anto Marcinkovic, Universitaet Bonn. Email: \href{mailto:s6bacosk@uni-bonn.de, s6tohall@uni-bonn.de, s3anmarc@uni-bonn.de}{\nolinkurl{s6bacosk [at] uni-bonn [dot] de, s6tohall [at] uni-bonn [dot] de, s3anmarc [at] uni-bonn [dot] de}}.}}
 
 \author{Bahar Coskun, Timo Haller, Anto Marcinkovic}
 
@@ -89,73 +89,101 @@
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-If you are using this template, please cite this item from the references: \citet{GaudeckerEconProjectTemplates}
+In this paper we will provide you with the produced figures and tables, which we created in our project by using the template by \citet{GaudeckerEconProjectTemplates}.
+
+
 
 
 \newpage
-
-\begin{table}
-	\centering
-	\caption{Lockdown Fatigue for Workplace Mobility (7 Days Moving Average)}
-	\scalebox{0.8}{%
-	\input{../../bld/tables/table_regression_workplaces_avg_7d.tex}
-}
-
-\end{table}
-
-
-\newpage
-
-\begin{table}
-	\centering
-	\caption{Lockdown Fatigue for Transit Station Mobility (7 Days Moving Average)}
-	\scalebox{0.8}{%
-		\input{../../bld/tables/table_regression_transit_stations_avg_7d.tex}
-	}
-\end{table}
-
-\newpage
-
-\begin{table}
-	\centering
-	\caption{Lockdown Fatigue for Retail and Recreation Mobility (7 Days Moving Average)}
-	\scalebox{0.8}{%
-		\input{../../bld/tables/table_regression_retail_and_recreation_avg_7d.tex}
-	}
-\end{table}
-
-\newpage
-
-\begin{table}
-	\centering
-	\caption{Lockdown Fatigue for Grocery and Pharmacy Mobility (7 Days Moving Average)}
-	\scalebox{0.8}{%
-		\input{../../bld/tables/table_regression_grocery_and_pharmacy_avg_7d.tex}
-	}
-\end{table}
-
-\newpage
-
-\begin{table}
-	\centering
-	\caption{Lockdown Fatigue for Residential Mobility (7 Days Moving Average)}
-	\scalebox{0.8}{%
-		\input{../../bld/tables/table_regression_residential_avg_7d.tex}
-	}
-\end{table}
-
-\newpage
+\section{Mobility comparison on country level}
+\subsection{Comparison between Germany and larger European Countries}
 \begin{figure}
 	\centering
 	\caption{Mobility comparison between Germany and similar sized European countries}
-	\includegraphics{../../bld/figures/plot_large_eu_countries_mobility.png}
+	\includegraphics[scale=0.3]{../../bld/figures/European_Mobility/plot_large_eu_countries_mobility.png}
 \end{figure}
 
 \begin{itemize}
 	\item In the Retail and Recreation figure, we see that up to July 2020, the mobility was similar between Germany, France, UK and Italy (way lower in Spain)
 	\item Starting November 2020, apart from Germany all the other countries had a large decrease in mobility
 	\item In February 2021, France and UK had a large increase in mobility, followed by a even larger decrease shortly after
+	\item In the Grocery and Pharmacy figure, again Spain has lower mobility than the other countries
+	\item Apart from Italy having higher average mobility in the summer, all the countries have similar mobility in this section
+	\item In both of the first two sections, the mobility was clearly higher in summer than in winter
+	\item In the workplaces figure, this is not as much the case
+	\item Also, all the countries seem to have similar mobility over time, e.g. there is no country which differs significantly from the others
 \end{itemize}
+
+\newpage
+\subsection{Comparison between Germany and smaller European Countries}
+\begin{figure}
+	\centering
+	\caption{Mobility comparison between Germany and some smaller European countries}
+	\includegraphics[scale=0.3]{../../bld/figures/European_Mobility/plot_small_eu_countries_mobility.png}
+\end{figure}
+
+\begin{itemize}
+	\item In the Retail and Recreation figure, we see that after a large decrease at the beginning of the pandemic, the mobility has increased at a similar rate in all countries
+	\item Also we can see that Germany, Denmark and Sweden have very similar mobility data over time, while Netherlands and Austria seem to have somewhat lower mobility
+	\item Similar holds in the Grocery and Pharmacy figure
+	\item In the workplaces figure, there is again no significant difference between countries
+	\item We note that Workplaces, as in the comparison with larger countries, the mobility does not seem to be very different in the summer and in the winter
+\end{itemize}
+
+\newpage
+
+\section{Comparison on German state level}
+\subsection{City States}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[scale=0.2]{../../bld/figures/German_Mobility/city_state.png}
+	\caption{City States Mobility}
+\end{figure}
+
+
+
+\subsection{Non-City States}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[scale=0.2]{../../bld/figures/German_Mobility/non_city_state.png}
+	\caption{Non-City States Mobility}
+\end{figure}
+
+
+
+\subsection{City vs Territorial States}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[scale=0.2]{../../bld/figures/German_Mobility/city_vs_territorial_state.png}
+	\caption{City vs Territorial States Mobility}
+\end{figure}
+
+
+
+\subsection{Former BRD vs DDR}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[scale=0.2]{../../bld/figures/German_Mobility/former_brd_vs_ddr.png}
+	\caption{Former BRD vs DDR Mobility}
+\end{figure}
+
+
+
+\subsection{North-East-South-West}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[scale=0.2]{../../bld/figures/German_Mobility/four_regions.png}
+	\caption{Four Regions Mobility}
+\end{figure}
+
+
+
+
 
 
 
