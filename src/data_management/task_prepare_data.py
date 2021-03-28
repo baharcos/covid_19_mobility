@@ -441,12 +441,7 @@ def prepare_stringency_data(data):
 ########################################################################################
 
 
-@pytask.mark.depends_on(
-    {
-        "google": SRC / "original_data" / "google_data.csv",
-        "infection": BLD / "data" / "infection_data.pkl",
-    }
-)
+@pytask.mark.depends_on(SRC / "original_data" / "google_data.csv")
 @pytask.mark.produces(
     {
         "mobility_germany_state_level": BLD
@@ -459,7 +454,7 @@ def prepare_stringency_data(data):
     }
 )
 def task_prepare_mobility_data(depends_on, produces):
-    google_mobility_data = pd.read_csv(depends_on["google"])
+    google_mobility_data = pd.read_csv(depends_on)
     eu_mobility_data = prepare_eu_mobility_data(google_mobility_data)
 
     germany_state_level_mobility_data = eu_mobility_data.loc["Germany"]
@@ -495,7 +490,7 @@ def task_prepare_mobility_data(depends_on, produces):
 @pytask.mark.depends_on(SRC / "original_data" / "owid_data.csv")
 @pytask.mark.produces(
     {
-        "eu_infection_data": BLD / "data" / "infection_data.pkl",
+        "eu_infection_data": BLD / "data" / "eu_infection_data.pkl",
         "germany_infection_data": BLD / "data" / "germany_infection_data.pkl",
     }
 )
@@ -526,6 +521,25 @@ def task_prepare_stringency_data(depends_on, produces):
 
     global_stringency_data.to_pickle(produces["global_stringency_data"])
     germany_stringency_data.to_pickle(produces["germany_stringency_data"])
+
+
+@pytask.mark.depends_on(
+    {
+        "mobility_eu_country_level": BLD
+        / "data"
+        / "mobility_eu_mobility_data.pkl",
+        "eu_infection_data": BLD / "data" / "eu_infection_data.pkl",
+    }
+)
+@pytask.mark.produces(BLD / "data" / "eu_compounded_data.pkl")
+def task_prepare_eu_compounded_data(depends_on, produces):
+    eu_mobility_data = pd.read_pickle(depends_on["mobility_eu_country_level"])
+    eu_infection_data = pd.read_pickle(depends_on["eu_infection_data"])
+
+    eu_composed_data = pd.merge(
+        eu_mobility_data, eu_infection_data, left_index=True, right_index=True
+    )
+    eu_composed_data.to_pickle(produces)
 
 
 # %%
@@ -589,7 +603,8 @@ def task_prepare_stringency_data(depends_on, produces):
 #     """
 
 #     out = data.rename(columns={date_name: "date_str"})
-#     out["date"] = list(map(lambda x: datetime.strptime(x, "%Y-%m-%d"), out["date_str"]))
+#     out["date"] = list(map(lambda x: datetime.strptime(x, "%Y-%m-%d"), out["date_str"]
+# ))
 
 #     out["weekday"] = list(map(lambda x: x.weekday(), out["date"]))
 #     out["weekday"] = out["weekday"].replace(
@@ -630,7 +645,8 @@ def task_prepare_stringency_data(depends_on, produces):
 
 #         out[varlist_moving_avg] = (
 #             out[varlist]
-#             .apply(lambda x: x.groupby(level=grouping_var).rolling(time).mean(), axis=0)
+#             .apply(lambda x: x.groupby(level=grouping_var).rolling(time).mean(),
+#  axis=0)
 #             .reset_index(level=0, drop=True)
 #             .to_numpy()
 #         )
@@ -689,7 +705,8 @@ def task_prepare_stringency_data(depends_on, produces):
 
 #     # Use MultiIndex for better overview
 #     out = out.set_index("date",append=True)
-#     out = out.drop(["Unnamed: 0","date_str","iso_3166_2_code","metro_area","sub_region_2","place_id"], axis=1)
+#     out = out.drop(["Unnamed: 0","date_str","iso_3166_2_code","metro_area","sub_region_2",
+# "place_id"], axis=1)
 #     out = out.rename(columns={"sub_region_1":"state"})
 
 #     return out
@@ -796,7 +813,9 @@ def task_prepare_stringency_data(depends_on, produces):
 
 
 # # %%
-# test = pd.read_csv("/Users/timohaller/Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/src/original_data/google_data.csv")
+# test = pd.read_csv("/Users/timohaller
+# /Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/src/original_data
+# /google_data.csv")
 
 # # %%
 # test
