@@ -93,33 +93,20 @@ def task_define_regression_specifications(depends_on, produces):
 
     # Create dictionary with formatted names
     naming_dict = {
-        "first_lockdown_7days_moving_average_duration:stringency_index_avg_7d": 
-        "1st Lockdown Duration x Stringency",
-        "second_lockdown_7days_moving_average_duration:stringency_index_avg_7d": 
-        "2nd Lockdown Duration x Stringency",
-        "stringency_index_avg_7d": 
-        "Stringency",
-        "first_lockdown_7days_moving_average": 
-        "1st Lockdown",
-        "second_lockdown_7days_moving_average": 
-        "2nd Lockdown",
-        "first_lockdown_7days_moving_average_duration": 
-        "1st Lockdown Duration",
-        "second_lockdown_7days_moving_average_duration": 
-        "2nd Lockdown Duration",
-        "first_lockdown_7days_moving_average:stringency_index_avg_7d": 
-        "1st Lockdown x Stringency",
-        "second_lockdown_7days_moving_average:stringency_index_avg_7d": 
-        "2nd Lockdown x Stringency",
-        "light_lockdown_7days_moving_average": 
-        "Light Lockdown",
-        "light_lockdown_7days_moving_average_duration": 
-        "Light Lockdown Duration",
+        "first_lockdown_7days_moving_average_duration:stringency_index_avg_7d": "1st Lockdown Duration x Stringency",
+        "second_lockdown_7days_moving_average_duration:stringency_index_avg_7d": "2nd Lockdown Duration x Stringency",
+        "stringency_index_avg_7d": "Stringency",
+        "first_lockdown_7days_moving_average": "1st Lockdown",
+        "second_lockdown_7days_moving_average": "2nd Lockdown",
+        "first_lockdown_7days_moving_average_duration": "1st Lockdown Duration",
+        "second_lockdown_7days_moving_average_duration": "2nd Lockdown Duration",
+        "first_lockdown_7days_moving_average:stringency_index_avg_7d": "1st Lockdown x Stringency",
+        "second_lockdown_7days_moving_average:stringency_index_avg_7d": "2nd Lockdown x Stringency",
+        "light_lockdown_7days_moving_average": "Light Lockdown",
+        "light_lockdown_7days_moving_average_duration": "Light Lockdown Duration",
         "new_cases_avg_7d": "New cases",
-        "np.power(new_cases_avg_7d, 2)": 
-        "New Cases Squared",
-        "np.power(new_cases_avg_7d, 3)": 
-        "New Cases Cubic",
+        "np.power(new_cases_avg_7d, 2)": "New Cases Squared",
+        "np.power(new_cases_avg_7d, 3)": "New Cases Cubic",
     }
 
     # Export everything to pickle format
