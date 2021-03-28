@@ -16,7 +16,7 @@ geckodriver for webscraping. The project is created and run on MacOS Big Sur ver
 on a macbook this can simply be done by moving .exe in to usr/bin/local.
 4. Install Estimagic by $ conda config --add channels conda-forge $ conda install -c opensourceeconomics estimagic : https://estimagic.readthedocs.io/en/latest/getting_started/installation.html
 5. Before running the project create and activate the envrionment by: $ conda env create -f environment.yml and then $ conda activate covid_19_mobility
-6. We rely on pytask to run the project once the project is cloned and all above steps are completed $ conda develop .
+6. We rely on pytask to run the project once the project is cloned and all above steps are completed $ conda develop . and the
 $ pytask
 
 ### Project Structure
@@ -29,5 +29,4 @@ src folder includes all the necessary code needed for the analysis:
 6. utils.py includes the the small function we use accross the project.
 7. test_moving_avg.py tests whether we calculate forward moving average correctly. As we use forward moving averages of data for our analysis, this step is taken to 
 ensure there are no calculation mistakes.
-=======
 
