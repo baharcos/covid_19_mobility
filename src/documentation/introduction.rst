@@ -5,33 +5,22 @@
 Introduction
 ************
 
-You can find the documentation on the rationale, pytask, and more background at https://econ-project-templates.readthedocs.io/en/stable/.
+Welcome to our project! We (Bahar, Timo and Anto) have built this project to analyze mobility on different levels:
 
-The Python version of the template uses a modified version of Stachurski's and Sargent's code accompanying their Online Course :cite:`StachurskiSargent13` for Schelling's (1969, :cite:`Schelling69`) segregation model as the running example.
-
+1. We compare German mobility with other european countries' mobility
+2. We compare German mobility on state level and on pre-specified divisions of Germany such as "City-States vs Non-City-States" and "Former BRD vs DDR"
+3. We analyze whether there is "Lockdown fatigue" in Germany by setting up several regressions with different specifications
 
 .. _getting_started:
 
 Getting started
 ===============
 
-**This assumes you have completed the steps in the `Getting Started section of the documentation <https://econ-project-templates.readthedocs.io/en/stable/getting_started.html>`_ and **everything worked.**
+**To be able to run our project, please follow the steps in the README file of our Github repository <https://github.com/baharcos/covid_19_mobility>`**
 
-The logic of the project template works by step of the analysis:
+The logic of our project is as follows:
 
 1. Data management
-2. The actual estimations / simulations / ?
-3. Visualisation and results formatting (e.g. exporting of LaTeX tables)
-4. Research paper and presentations.
-
-It can be useful to have code and model parameters available to more than one of these steps, in that case see sections :ref:`model_specifications`, :ref:`model_code`, and :ref:`library`.
-
-First of all, think about whether this structure fits your needs -- if it does not, you need to adjust (delete/add/rename) directories and files in the following locations:
-
-    * Directories in **src/**;
-    * The documentation source files in **src/documentation/** (Note: These should follow the directories in **src** exactly);
-    * The list of included documentation source files in **src/documentation/index.rst**
-
-Later adjustments should be painlessly possible, so things won't be set in stone.
-
-Once you have done that, move your source data to **src/original_data/** and start filling up the actual steps of the project workflow (data management, analysis, final steps, paper). All you should need to worry about is to specify the tasks for `pytask`.
+2. Visualization and results formatting (e.g. exporting of LaTeX tables)
+3. Estimations
+4. Presentation.
