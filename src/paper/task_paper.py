@@ -7,7 +7,7 @@ from src.config import ROOT
 from src.config import SRC
 
 
-documents = ["research_paper"]
+documents = ["research_paper", "research_pres_30min"]
 
 
 @pytask.mark.latex(

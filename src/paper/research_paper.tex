@@ -16,7 +16,6 @@
 \usepackage{xcolor}
 \usepackage{subcaption}
 \usepackage{minibox}
-\usepackage{adjustbox}
 % \usepackage{pdf14} % Enable for Manuscriptcentral -- can't handle pdf 1.5
 % \usepackage{endfloat} % Enable to move tables / figures to the end. Useful for some submissions.
 
@@ -82,61 +81,35 @@
 \end{abstract}
 \clearpage
 
-\tableofcontents
-\clearpage
-
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
 If you are using this template, please cite this item from the references: \citet{GaudeckerEconProjectTemplates}
 
+\citet{Schelling69} example in the code is taken from \citet{StachurskiSargent13}
 
-\newpage
-	
-\begin{table}
-	\centering
-	\scalebox{0.8}{%
-	\input{tables/table_regression_workplaces_avg_7d.tex}
-}
-\end{table}
+The decision rule of an agent is the following:
+\input{formulas/decision_rule}
 
-\newpage
+\begin{figure}
+    \caption{Segregation by cycle in the baseline \citet{Schelling69} model as in the \citet{StachurskiSargent13} example}
 
-\begin{table}
-	\centering
-	\scalebox{0.8}{%
-		\input{tables/table_regression_transit_stations_avg_7d.tex}
-	}
-\end{table}
+    \includegraphics[width=\textwidth]{../../bld/figures/schelling_baseline}
 
-\newpage
+\end{figure}
 
-\begin{table}
-	\centering
-	\scalebox{0.8}{%
-		\input{tables/table_regression_retail_and_recreation_avg_7d.tex}
-	}
-\end{table}
 
-\newpage
+\begin{figure}
+    \caption{Segregation by cycle in the baseline \citet{Schelling69} model, limiting the number of potential moves per period to two}
 
-\begin{table}
-	\centering
-	\scalebox{0.8}{%
-		\input{tables/table_regression_grocery_and_pharmacy_avg_7d.tex}
-	}
-\end{table}
+    \includegraphics[width=\textwidth]{../../bld/figures/schelling_max_moves_2}
 
-\newpage
+\end{figure}
 
-\begin{table}
-	\centering
-	\scalebox{0.8}{%
-		\input{tables/table_regression_residential_avg_7d.tex}
-	}
-\end{table}
+% section introduction (end)
 
-\clearpage
+
+
 
 \setstretch{1}
 \printbibliography

@@ -15,5 +15,8 @@ Welcome to the covid-19 Mobility project's documentation!
     data_management
     analysis
     final
+    model_code
+    model_specs
+    library
     paper
     references

@@ -1,5 +1,5 @@
-"""
-This task cleans and prepares all datasets for the following analysis.
+"""Clean and format the data for the analysis.
+
 """
 from datetime import datetime
 
@@ -110,21 +110,18 @@ list_east_germany = [
 
 
 def create_date(data, date_name="date"):
-    """
-    Adds variables for datetime, day, week, weekend, month and year to dataframe
+    """Generates and adds date variables: datetime, day, week, weekend, month and year
 
-    Input:
-        data (df): dataframe containing a date variable
-        data_name (str): name of date variable
+    Args:
+        data (pandas.DataFrame): must contain a date column
+        date_name (str): Defaults to "date".
 
-    Output:
-        out (df): dataframe with additional variables
-
+    Returns:
+        pandas.DataFrame: Input dataframe with additional date variables
     """
 
     out = data.rename(columns={date_name: "date_str"})
     out["date"] = list(map(lambda x: datetime.strptime(x, "%Y-%m-%d"), out["date_str"]))
-    # out = out.drop("date_str",axis=1)
 
     out["weekday"] = list(map(lambda x: x.weekday(), out["date"]))
     out["weekday"] = out["weekday"].replace(
@@ -139,25 +136,23 @@ def create_date(data, date_name="date"):
     out["month"] = list(map(lambda x: x.month, out["date"]))
     out["year"] = list(map(lambda x: x.year, out["date"]))
 
-    # out["date"] = out["date"].apply(lambda x: x.date())
-
     return out
 
 
 def create_moving_average(data, varlist, grouping_var, kind="backward", time=7):
-    """
-    Adds variables of moving average to dataframe
+    """Generate moving average variable and add to the data frame
 
-    Input:
-        data (df): dataframe containing variables of varlist; index must contain
-        grouping_var
+    Args:
+        data (pandas.DataFrame): variables of varlist, index must contain grouping_var
         varlist (list): variables for which moving average should be calculated
-        time (float): time span for moving average
+        grouping_var ([type]): [description]
+        kind (str, optional): forward or backward. Defaults to "backward".
+        time (int, optional): time span for moving average. Defaults to 7.
 
-    Output:
-        out (df): dataframe with additional variables
-
+    Returns:
+        pandas.DataFrame: Input dataframe with additional moving average variables
     """
+
     suffix = "_avg_" + str(time) + "d"
     varlist_moving_avg = list(map(lambda x: x + suffix, varlist))
 
@@ -221,7 +216,7 @@ def task_prepare_owid_data(depends_on, produces):
         eu_infect_numbers, ["new_cases"], "country", kind="forward", time=7
     )
 
-    # Save dataframe as pickle file
+    # Save dataframe as csv
     eu_infect_numbers.to_pickle(produces)
 
 
@@ -342,11 +337,7 @@ def task_prepare_data(depends_on, produces):
     # Join the two datasets
     eu_composed_data_country_level = eu_country_level_data.join(eu_infect_numbers)
     eu_composed_data_country_level = eu_composed_data_country_level.reset_index()
-    eu_composed_data_country_level = eu_composed_data_country_level.drop(
-        "Unnamed: 0", axis=1
-    )
 
-    # Export the data to pickle format
     eu_composed_data_country_level.to_pickle(produces["eu_country_level"])
 
 
@@ -354,11 +345,7 @@ def task_prepare_data(depends_on, produces):
 @pytask.mark.produces(BLD / "data" / "german_stringency_data.pkl")
 def task_prepare_stringency_data(depends_on, produces):
     stringency_data = pd.read_csv(depends_on)
-    stringency_data = create_date(stringency_data, "date")
-    stringency_data["date"] = stringency_data["date"].apply(lambda x: x.date())
-    stringency_data = stringency_data.set_index(["country", "date"])
-    stringency_data = stringency_data.sort_index()
-
+    stringency_data = stringency_data.set_index("country")
     stringency_data = create_moving_average(
         stringency_data,
         ["stringency_index"],
@@ -367,5 +354,4 @@ def task_prepare_stringency_data(depends_on, produces):
         time=7,
     )
     german_stringency_data = stringency_data.loc["Germany"].drop("country_code", axis=1)
-
     german_stringency_data.to_pickle(produces)
