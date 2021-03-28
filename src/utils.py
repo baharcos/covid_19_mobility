@@ -1,3 +1,36 @@
+from datetime import datetime
+
+
+def create_date(data, date_name="date"):
+    """Generates and adds date variables: datetime, day, week, weekend, month and year
+
+    Args:
+        data (pandas.DataFrame): must contain a date column
+        date_name (str): Defaults to "date".
+
+    Returns:
+        pandas.DataFrame: Input dataframe with additional date variables
+    """
+
+    out = data.rename(columns={date_name: "date_str"})
+    out["date"] = list(map(lambda x: datetime.strptime(x, "%Y-%m-%d"), out["date_str"]))
+
+    out["weekday"] = list(map(lambda x: x.weekday(), out["date"]))
+    out["weekday"] = out["weekday"].replace(
+        {0: "Mon", 1: "Tue", 2: "Wed", 3: "Thu", 4: "Fri", 5: "Sat", 6: "Sun"}
+    )
+
+    out["day"] = list(map(lambda x: x.day, out["date"]))
+    out["week"] = list(map(lambda x: x.week, out["date"]))
+    out["weekend"] = list(
+        map(lambda x: int(x), (out["weekday"] == "Sat") | (out["weekday"] == "Sun"))
+    )
+    out["month"] = list(map(lambda x: x.month, out["date"]))
+    out["year"] = list(map(lambda x: x.year, out["date"]))
+
+    return out
+
+
 def create_moving_average(data, varlist, grouping_var, kind="backward", time=7):
     """Generate moving average variable and add to the data frame
 
