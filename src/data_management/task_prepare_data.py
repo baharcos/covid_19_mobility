@@ -1,4 +1,4 @@
-"""Clean and format the data sets for the analysis.
+"""Clean and format the previously downloaded data sets for the analysis.
 
 """
 from datetime import datetime

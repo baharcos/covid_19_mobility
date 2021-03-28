@@ -1,9 +1,9 @@
 """Read the mobility, infections and stringency index data
-from urls, extract the relevant parts for the analysis and save them into csv files.
-The data collected here includes:
-1. Google mobility index
-2. Our World in Data (OWID) infection numbers
-3. Our World in Data (OWID) stringency index
+from urls, extract the relevant parts for the analysis and save them into csv files.\n
+The data collected here includes:\n
+1. Google mobility index\n
+2. Our World in Data (OWID) infection numbers\n
+3. Our World in Data (OWID) stringency index\n
 """
 import re
 from datetime import datetime
