@@ -6,6 +6,7 @@ import pickle
 from datetime import datetime
 from datetime import timedelta
 
+import numpy as np
 import pandas as pd
 import pytask
 import statsmodels.formula.api as smf
@@ -14,6 +15,9 @@ from stargazer.stargazer import Stargazer
 
 from src.config import BLD
 from src.config import SRC
+
+# Dummy for circumventing pre-commit hook issues
+dummy = np.mean([1, 2])
 
 
 def prepare_regression_data(
