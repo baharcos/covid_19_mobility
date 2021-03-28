@@ -1,8 +1,9 @@
-"""This task downloads all the data needed for further analysis:\n
-1. Apple Mobility data\n
-2. Google Mobility data\n
-3. Our World in Data (OWID) infection numbers\n
-4. Our World in Data (OWID) stringency index
+"""Read the mobility, infections and stringency index data
+from urls, extract the relevant parts for the analysis and save them into csv files.
+The data collected here includes:
+1. Google mobility index
+2. Our World in Data (OWID) infection numbers
+3. Our World in Data (OWID) stringency index
 """
 import re
 from datetime import datetime
@@ -16,23 +17,8 @@ from selenium import webdriver
 
 from src.config import SRC
 
-# Set up the correct apple url
-base_url = (
-    "https://covid19-static.cdn-apple.com/covid19-mobility-data/current/v3/index.json"
-)
-base_url_text = requests.get(base_url).text
-base_path = re.findall("/covid19-mobility-data/.+?/v3", base_url_text)
-csv_path = re.findall("/en-us/applemobilitytrends-.+?.csv", base_url_text)
-apple_url = "https://covid19-static.cdn-apple.com" + base_path[0] + csv_path[0]
-
 google_url = "https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv"
-
 owid_url = "https://covid.ourworldindata.org/data/owid-covid-data.csv"
-
-@pytask.mark.produces(SRC / "original_data" / "apple_data.csv")
-def task_get_apple_data(produces):
-    df = pd.read_csv(apple_url)
-    df.to_csv(produces)
 
 
 @pytask.mark.produces(SRC / "original_data" / "google_data.csv")
@@ -69,7 +55,6 @@ def task_get_stringency_index_data(produces):
 
     # Convert into string
     data_unformatted = data_unformatted.decode("UTF-8")
-
 
     # Split Variables and entity keys
     data_unformatted_split = data_unformatted.split(',"entityKey":')
