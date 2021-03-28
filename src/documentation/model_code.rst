@@ -4,13 +4,13 @@
 Model code
 **********
 
-The directory *src.model_code* contains source files that might differ by model and which are potentially used at various steps of the analysis.
+We run several regressions to find out which model represents the data best. The file in this directory produces the different specifications.
+They can be found in the directory *src/model_specs*.
 
-For example, you may have a class that is used both in the :ref:`analysis` and the :ref:`final` steps. Additionally, maybe you have different utility functions in the baseline version and for your robustness check. You can just inherit from the baseline class and override the utility function then.
 
-The ``Agent`` class of the Schelling example
-============================================
+Regression specifications
+=========================
 
-.. automodule:: src.model_code.agent
+.. automodule:: src.model_code.task_regression_specifications
     :members:
 
