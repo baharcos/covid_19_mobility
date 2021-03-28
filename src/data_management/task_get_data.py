@@ -29,7 +29,6 @@ google_url = "https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.cs
 
 owid_url = "https://covid.ourworldindata.org/data/owid-covid-data.csv"
 
-
 @pytask.mark.produces(SRC / "original_data" / "apple_data.csv")
 def task_get_apple_data(produces):
     df = pd.read_csv(apple_url)
@@ -70,6 +69,7 @@ def task_get_stringency_index_data(produces):
 
     # Convert into string
     data_unformatted = data_unformatted.decode("UTF-8")
+
 
     # Split Variables and entity keys
     data_unformatted_split = data_unformatted.split(',"entityKey":')
