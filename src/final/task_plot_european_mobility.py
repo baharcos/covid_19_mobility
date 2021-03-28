@@ -15,22 +15,14 @@ def plot_european_countries(countries, path):
     """
     Plots mobility on country level for different countries
 
-    Input:
+    Args:
         countries (list): list containing countries whose mobility should be comared
         path (path-like): path where to save the produced figure
 
-    Output:
+    Returns:
         figure (matplotlib object): figure showing mobility in different countries
     """
 
-    # Plotting infection numbers in small countries
-    # fig, ax = plt.subplots(figsize=(15,8))
-
-    # sns.lineplot(x=countries.index, y="new_cases_avg_7d",data=countries,hue="country")
-
-    # ax.axhline(0,color="black",alpha=0.8)
-
-    # Compare Germany, France, UK, Italy and Spain for different dimensions
     fig, ax = plt.subplots(3, 1, figsize=(15, 24))
 
     sns.lineplot(

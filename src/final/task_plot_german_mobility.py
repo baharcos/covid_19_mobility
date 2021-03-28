@@ -39,7 +39,7 @@ def mobility_plot(
     """
     Produces figure for mobility based on variables provided to the function
 
-    Input:
+    Args:
         data_set (df): dataset containing
         var_list_moving_avg (list): list containing categories to observe
         fig_width (int): Width of figure (default is 20)
@@ -47,7 +47,7 @@ def mobility_plot(
         group_var (string): Variable to be grouped on
         path (path-like): path where to save the produces figure
 
-    Output:
+    Returns:
         figure (matplotlib object): produced figure
     """
 
