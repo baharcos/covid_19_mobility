@@ -79,7 +79,6 @@ def task_plot_german_mobility(depends_on, produces):
 
     # Load EU data and keep German data only
     eu_country_level_data = pd.read_pickle(depends_on)
-    eu_country_level_data = eu_country_level_data.set_index(["country", "date"])
     germany_country_level_data = eu_country_level_data.loc["Germany"]
 
     fig, ax = plt.subplots(figsize=(15, 8))
@@ -132,7 +131,7 @@ products = {
 }
 
 
-@pytask.mark.depends_on(BLD / "data" / "german_states_data.pkl")
+@pytask.mark.depends_on(BLD / "data" / "mobility_germany_states_data.pkl")
 @pytask.mark.produces(products)
 def task_plot_german_states_mobility(depends_on, produces):
     # Load EU data and keep German data only

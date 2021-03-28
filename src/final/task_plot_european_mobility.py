@@ -87,7 +87,6 @@ products = {
 def task_plot_european_countries(depends_on, produces):
     # Load in data
     eu_complete_data = pd.read_pickle(depends_on)
-    eu_complete_data = eu_complete_data.set_index(["country", "date"])
 
     small = ["Germany", "Netherlands", "Austria", "Sweden", "Denmark"]
     large = ["Germany", "France", "United Kingdom", "Italy", "Spain"]

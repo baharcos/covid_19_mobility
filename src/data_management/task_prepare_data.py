@@ -417,7 +417,7 @@ def task_prepare_stringency_data(depends_on, produces):
         "eu_infection_data": BLD / "data" / "eu_infection_data.pkl",
     }
 )
-@pytask.mark.produces(BLD / "data" / "eu_compounded_data.pkl")
+@pytask.mark.produces(BLD / "data" / "eu_composed_data_country_level.pkl")
 def task_prepare_eu_compounded_data(depends_on, produces):
     eu_mobility_data = pd.read_pickle(depends_on["mobility_eu_country_level"])
     eu_infection_data = pd.read_pickle(depends_on["eu_infection_data"])

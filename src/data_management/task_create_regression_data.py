@@ -13,7 +13,7 @@ from src.config import SRC
 
 
 def prepare_regression_data(
-    data_composed, stringency_data, dates_lockdowns, first_last_day=None
+    mobility_data, stringency_data, dates_lockdowns, first_last_day=None
 ):
     """
     Creates dataframe with all necessary variables (especially time variables) for
@@ -33,19 +33,9 @@ def prepare_regression_data(
 
     """
 
-    # Prepare datasets for merge
-    germany_composed_country_level = data_composed.loc[
-        data_composed["country"] == "Germany",
-    ]
-    germany_composed_country_level = germany_composed_country_level.set_index("date")
-
-    stringency_data = stringency_data.reset_index(level=0)
-    stringency_data["date"] = stringency_data["date"].apply(lambda x: x.date())
-    stringency_data = stringency_data.set_index("date")
-
     # Merge the two datasets
     regression_data = pd.merge(
-        germany_composed_country_level,
+        mobility_data,
         stringency_data,
         left_index=True,
         right_index=True,
@@ -55,13 +45,6 @@ def prepare_regression_data(
     regression_data.index = list(
         map(lambda x: pd.to_datetime(x).date(), regression_data.index.values)
     )
-
-    # Drop unnecessary variables
-    regression_data = regression_data.drop(
-        ["country", "country_region_code", "place_id"], axis=1
-    )
-
-    # Create necessary time variables
 
     lockdown_names = [*dates_lockdowns]
 
@@ -127,22 +110,22 @@ def prepare_regression_data(
 
 @pytask.mark.depends_on(
     {
-        "eu_composed_data_country_level": BLD
+        "mobility_germany_country_data": BLD
         / "data"
-        / "eu_composed_data_country_level.pkl",
-        "stringency_data": BLD / "data" / "german_stringency_data.pkl",
+        / "mobility_germany_country_data.pkl",
+        "stringency_data": BLD / "data" / "germany_stringency_data.pkl",
         "dates_lockdowns": SRC / "model_specs" / "time_lockdowns.pkl",
     }
 )
 @pytask.mark.produces(BLD / "data" / "regression_data.pkl")
 def task_create_regression_data(depends_on, produces):
-    eu_composed_country_level = pd.read_pickle(
-        depends_on["eu_composed_data_country_level"]
+    mobility_germany_country_data = pd.read_pickle(
+        depends_on["mobility_germany_country_data"]
     )
     stringency_data = pd.read_pickle(depends_on["stringency_data"])
     dates_lockdowns = pd.read_pickle(depends_on["dates_lockdowns"])
     regression_data = prepare_regression_data(
-        data_composed=eu_composed_country_level,
+        mobility_data=mobility_germany_country_data,
         stringency_data=stringency_data,
         dates_lockdowns=dates_lockdowns,
         first_last_day=["2020-02-15", "2021-02-22"],

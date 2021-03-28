@@ -156,31 +156,22 @@ def task_run_regressions(depends_on, produces):
     pickle.dump(all_regression_tables_latex, all_regression_tables_latex_file)
 
 
-# Create "produces" dictionary for export of tables
-produces_dictionary_export = {}
-all_regression_tables_latex_file = open(
-    BLD / "tables" / "all_regression_tables_latex.pkl", "rb"
-)
-all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
-all_regression_tables_latex_file.close()
 
-produces_dictionary_export = {}
-for dependent_variable in [*all_regression_tables_latex]:
-    produces_name = "table_regression_" + dependent_variable
-    produces_file_name = produces_name + ".tex"
-    produces_dictionary_export[produces_name] = BLD / "tables" / produces_file_name
+# @pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
+# @pytask.mark.produces({"workplaces_avg_7d": BLD / "tables" / "regression_table_workplaces_avg_7d.tex",
+# "retail_and_recreation_avg_7d": BLD / "tables" / "regression_table_retail_and_recreation_avg_7d_avg_7d.tex",
+# "residential_avg_7d": BLD / "tables" / "regression_table_residential_avg_7d_avg_7d.tex",
+# "grocery_and_pharmacy_avg_7d": BLD / "tables" / "regression_table_grocery_and_pharmacy_avg_7d_avg_7d.tex",
+# "transit_stations_avg_7d": BLD / "tables" / "regression_table_transit_stations_avg_7d_avg_7d.tex",
+# })
+# def task_export_regression_tables(depends_on, produces):
 
+#     all_regression_tables_latex_file = open(depends_on, "rb")
+#     all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
 
-@pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
-@pytask.mark.produces(produces_dictionary_export)
-def task_export_regression_tables(depends_on, produces):
-
-    all_regression_tables_latex_file = open(depends_on, "rb")
-    all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
-
-    for produces_name in [*produces]:
-        dependent_variable = produces_name.replace("table_regression_", "")
-        regression_table_latex_file = open(produces[produces_name], "wb")
-        regression_table_latex_file.write(
-            bytes(all_regression_tables_latex[dependent_variable], "utf-8")
-        )
+#     for produces_name in [*produces]:
+#         dependent_variable = produces_name.replace("regression_table", "")
+#         regression_table_latex_file = open(produces[produces_name], "wb")
+#         regression_table_latex_file.write(
+#             bytes(all_regression_tables_latex[dependent_variable], "utf-8")
+#         )
