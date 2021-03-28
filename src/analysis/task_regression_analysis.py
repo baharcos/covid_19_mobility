@@ -309,9 +309,7 @@ produces_dictionary_export = {}
 for dependent_variable in [*all_regression_tables_latex]:
     produces_name = "table_regression_" + dependent_variable
     produces_file_name = produces_name + ".tex"
-    produces_dictionary_export[produces_name] = (
-        SRC / "paper" / "tables" / produces_file_name
-    )
+    produces_dictionary_export[produces_name] = BLD / "tables" / produces_file_name
 
 
 @pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
