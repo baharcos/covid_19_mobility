@@ -13,7 +13,7 @@ from src.config import SRC
 
 
 def prepare_regression_data(
-    mobility_data, stringency_data, dates_lockdowns, first_last_day=None
+    mobility_data, stringency_data, infection_data, dates_lockdowns, first_last_day=None
 ):
     """
     Creates dataframe with all necessary variables (especially time variables) for
@@ -37,6 +37,14 @@ def prepare_regression_data(
     regression_data = pd.merge(
         mobility_data,
         stringency_data,
+        left_index=True,
+        right_index=True,
+    )
+
+    # Merge it with infection data
+    regression_data = pd.merge(
+        regression_data,
+        infection_data,
         left_index=True,
         right_index=True,
     )
@@ -115,6 +123,9 @@ def prepare_regression_data(
         / "mobility_germany_country_data.pkl",
         "stringency_data": BLD / "data" / "germany_stringency_data.pkl",
         "dates_lockdowns": SRC / "model_specs" / "time_lockdowns.pkl",
+        "germany_infection_data": BLD
+        / "data"
+        / "germany_infection_data.pkl",
     }
 )
 @pytask.mark.produces(BLD / "data" / "regression_data.pkl")
@@ -124,9 +135,11 @@ def task_create_regression_data(depends_on, produces):
     )
     stringency_data = pd.read_pickle(depends_on["stringency_data"])
     dates_lockdowns = pd.read_pickle(depends_on["dates_lockdowns"])
+    germany_infection_data = pd.read_pickle(depends_on["germany_infection_data"])
     regression_data = prepare_regression_data(
         mobility_data=mobility_germany_country_data,
         stringency_data=stringency_data,
+        infection_data=germany_infection_data,
         dates_lockdowns=dates_lockdowns,
         first_last_day=["2020-02-15", "2021-02-22"],
     )

@@ -157,21 +157,40 @@ def task_run_regressions(depends_on, produces):
 
 
 
-# @pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
-# @pytask.mark.produces({"workplaces_avg_7d": BLD / "tables" / "regression_table_workplaces_avg_7d.tex",
-# "retail_and_recreation_avg_7d": BLD / "tables" / "regression_table_retail_and_recreation_avg_7d_avg_7d.tex",
-# "residential_avg_7d": BLD / "tables" / "regression_table_residential_avg_7d_avg_7d.tex",
-# "grocery_and_pharmacy_avg_7d": BLD / "tables" / "regression_table_grocery_and_pharmacy_avg_7d_avg_7d.tex",
-# "transit_stations_avg_7d": BLD / "tables" / "regression_table_transit_stations_avg_7d_avg_7d.tex",
-# })
-# def task_export_regression_tables(depends_on, produces):
+@pytask.mark.depends_on(BLD / "tables" / "all_regression_tables_latex.pkl")
+@pytask.mark.produces({"workplaces_avg_7d": BLD / "tables" / "regression_table_workplaces_avg_7d.tex",
+"retail_and_recreation_avg_7d": BLD / "tables" / "regression_table_retail_and_recreation_avg_7d_avg_7d.tex",
+"residential_avg_7d": BLD / "tables" / "regression_table_residential_avg_7d_avg_7d.tex",
+"grocery_and_pharmacy_avg_7d": BLD / "tables" / "regression_table_grocery_and_pharmacy_avg_7d_avg_7d.tex",
+"transit_stations_avg_7d": BLD / "tables" / "regression_table_transit_stations_avg_7d_avg_7d.tex",
+})
+def task_export_regression_tables(depends_on, produces):
 
-#     all_regression_tables_latex_file = open(depends_on, "rb")
-#     all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
+    all_regression_tables_latex_file = open(depends_on, "rb")
+    all_regression_tables_latex = pickle.load(all_regression_tables_latex_file)
 
-#     for produces_name in [*produces]:
-#         dependent_variable = produces_name.replace("regression_table", "")
-#         regression_table_latex_file = open(produces[produces_name], "wb")
-#         regression_table_latex_file.write(
-#             bytes(all_regression_tables_latex[dependent_variable], "utf-8")
-#         )
+    for produces_name in [*produces]:
+        dependent_variable = produces_name.replace("regression_table", "")
+        regression_table_latex_file = open(produces[produces_name], "wb")
+        regression_table_latex_file.write(
+            bytes(all_regression_tables_latex[dependent_variable], "utf-8")
+        )
+
+
+# %% 
+
+import pickle
+
+import numpy as np
+import pandas as pd
+import pytask
+import statsmodels.formula.api as smf
+from ordered_set import OrderedSet
+from stargazer.stargazer import Stargazer
+
+from src.config import BLD
+from src.config import SRC
+
+test = pd.read_pickle("/Users/timohaller/Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/bld/data/regression_data.pkl")
+
+test.columns
