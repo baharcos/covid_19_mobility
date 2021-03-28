@@ -18,6 +18,7 @@ on a macbook this can simply be done by moving .exe in to usr/bin/local.
 5. Before running the project create and activate the envrionment by: $ conda env create -f environment.yml and then $ conda activate covid_19_mobility
 6. We rely on pytask to run the project once the project is cloned and all above steps are completed $ conda develop . and the
 $ pytask
+7. Webscrapping relies on having a Firefox browser. This can be adjusted by changing the 38th line in src/data_management/task_get_data. If Safari is decided to be used remote control needs to be allowed.
 
 ### Project Structure
 src folder includes all the necessary code needed for the analysis:
