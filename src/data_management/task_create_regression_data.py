@@ -148,4 +148,3 @@ def task_create_regression_data(depends_on, produces):
         first_last_day=["2020-02-15", "2021-02-22"],
     )
     regression_data.to_pickle(produces)
-    # regression_data.to_csv(produces)
