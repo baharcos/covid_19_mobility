@@ -35,7 +35,7 @@ def task_get_owid_data(produces):
 
 @pytask.mark.produces(SRC / "original_data" / "stringency_index_data.csv")
 def task_get_stringency_index_data(produces):
-    driver = webdriver.Firefox()
+    driver = webdriver.Safari()
     driver.get("https://ourworldindata.org/grapher/covid-stringency-index")
     source_code = driver.page_source
     driver.close()
