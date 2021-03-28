@@ -136,58 +136,7 @@ european_countries = np.array(
     dtype=object,
 )
 
-# Several Divisions of Germany
-list_city_states = ["Berlin", "Bremen", "Hamburg"]
-list_non_city_states = [
-    "Baden-Württemberg",
-    "Bavaria",
-    "Brandenburg",
-    "Hessen",
-    "Lower Saxony",
-    "Mecklenburg-Vorpommern",
-    "North Rhine-Westphalia",
-    "Rhineland-Palatinate",
-    "Saarland",
-    "Saxony",
-    "Saxony-Anhalt",
-    "Schleswig-Holstein",
-    "Thuringia",
-]
-list_former_brd = [
-    "Baden-Württemberg",
-    "Bavaria",
-    "Bremen",
-    "Hamburg",
-    "Hessen",
-    "Lower Saxony",
-    "North Rhine-Westphalia",
-    "Rhineland-Palatinate",
-    "Saarland",
-    "Schleswig-Holstein",
-]
-list_former_ddr = [
-    "Brandenburg",
-    "Mecklenburg-Vorpommern",
-    "Saxony",
-    "Saxony-Anhalt",
-    "Thuringia",
-]
-list_west_germany = [
-    "Hessen",
-    "North Rhine-Westphalia",
-    "Rhineland-Palatinate",
-    "Saarland",
-]
-list_south_germany = ["Baden-Württemberg", "Bavaria"]
-list_north_germany = ["Bremen", "Hamburg", "Lower Saxony", "Schleswig-Holstein"]
-list_east_germany = [
-    "Brandenburg",
-    "Berlin",
-    "Mecklenburg-Vorpommern",
-    "Saxony",
-    "Saxony-Anhalt",
-    "Thuringia",
-]
+
 
 
 def prepare_eu_mobility_data(data):
@@ -245,7 +194,7 @@ def prepare_mobility_germany_state_data(data):
     """
     Add docstring here.
     """
-
+        
     out = data.reset_index()
     out = out.set_index("state")
 
@@ -347,6 +296,15 @@ def task_prepare_mobility_data(depends_on, produces):
     germany_state_level_mobility_data = prepare_mobility_germany_state_data(
         germany_state_level_mobility_data
     )
+    germany_state_level_mobility_data.loc[list_city_states, "city_noncity"] = "city state"
+    germany_state_level_mobility_data.loc[list_non_city_states, "city_noncity"] = "territorial state"
+    germany_state_level_mobility_data.loc[list_former_brd, "brd_ddr"] = "former BRD"
+    germany_state_level_mobility_data.loc[list_former_ddr, "brd_ddr"] = "former DDR"
+    germany_state_level_mobility_data.loc[list_west_germany, "four_regions"] = "West"
+    germany_state_level_mobility_data.loc[list_south_germany, "four_regions"] = "South"
+    germany_state_level_mobility_data.loc[list_north_germany, "four_regions"] = "North"
+    germany_state_level_mobility_data.loc[list_east_germany, "four_regions"] = "East"
+
     germany_country_level_mobility_data = germany_state_level_mobility_data.loc[
         "country"
     ]

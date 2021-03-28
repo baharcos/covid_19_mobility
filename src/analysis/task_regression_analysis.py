@@ -175,22 +175,3 @@ def task_export_regression_tables(depends_on, produces):
         regression_table_latex_file.write(
             bytes(all_regression_tables_latex[dependent_variable], "utf-8")
         )
-
-
-# %% 
-
-import pickle
-
-import numpy as np
-import pandas as pd
-import pytask
-import statsmodels.formula.api as smf
-from ordered_set import OrderedSet
-from stargazer.stargazer import Stargazer
-
-from src.config import BLD
-from src.config import SRC
-
-test = pd.read_pickle("/Users/timohaller/Desktop/Studium/Master/Semester_3/EPP/covid_19_mobility/bld/data/regression_data.pkl")
-
-test.columns
