@@ -1,4 +1,6 @@
 from datetime import datetime
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def create_date(data, date_name="date"):
@@ -76,3 +78,33 @@ def create_moving_average(data, varlist, grouping_var, kind="backward", time=7):
         )
     out = out.sort_index()
     return out
+
+def mobility_plot(data_set, var_list_moving_avg, titles, colors, group_var, fig_width=20, fig_height=40):
+    """Creating multiple plots in one figure for a given data frame, titles and colors have to be defined
+    before using the function
+
+    Args:
+        data_set (pandas.DataFrame): 
+        var_list_moving_avg ([type]): which variables the figures should be created for
+        fig_width (int, optional): Define figure width. Defaults to 20.
+        fig_height (int, optional): Define figure height. Defaults to 40.
+    """
+    num_plots = len(titles)
+    fig, ax = plt.subplots(num_plots, 1, figsize=(fig_width, fig_height))
+
+    for i in range(num_plots):
+        sns.set_palette(colors)
+        sns.lineplot(
+            x=data_set.index,
+            y=var_list_moving_avg[i],
+            data=data_set,
+            hue=group_var,
+            ax=ax[i],
+        )
+        ax[i].axhline(0, color="black", alpha=0.8)
+        ax[i].set_title(titles[i])
+        ylim_min = data_set.loc[:, var_list_moving_avg[i]].min() - 10
+        ylim_max = data_set.loc[:, var_list_moving_avg[i]].max() + 10
+        ax[i].set_ylim(ylim_min, ylim_max)
+        ax[i].spines["right"].set_visible(False)
+        ax[i].spines["top"].set_visible(False)
